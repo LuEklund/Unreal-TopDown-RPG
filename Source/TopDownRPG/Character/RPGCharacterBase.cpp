@@ -18,3 +18,8 @@ void ARPGCharacterBase::BeginPlay()
 	
 }
 
+UAbilitySystemComponent* ARPGCharacterBase::GetAbilitySystemComponent() const
+{
+	return AbilitySystemComponent;
+}
+
