@@ -17,6 +17,12 @@ class TOPDOWNRPG_API ARPGEnemy : public ARPGCharacterBase, public IEnemyInterfac
 
 public:
 	ARPGEnemy();
+
+	//Enemy Interface
 	virtual void HighLightActor() override;
 	virtual void UnHighLightActor() override;
+	//End Enemy interface
+
+protected:
+	virtual void BeginPlay() override;
 };

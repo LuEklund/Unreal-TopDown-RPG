@@ -22,6 +22,10 @@ private:
 	UPROPERTY(EditAnywhere, Category="Camera")
 	TObjectPtr<UCameraComponent>	CameraComponent;
 
+	void	InitAbilityActorInfo();
+
 public:
 	ARPGCharacter();
+	virtual void PossessedBy(AController* NewController) override;
+	virtual void OnRep_PlayerState() override;
 };
