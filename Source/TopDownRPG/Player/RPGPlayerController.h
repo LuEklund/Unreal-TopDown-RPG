@@ -9,6 +9,7 @@
 struct FInputActionValue;
 class UInputMappingContext;
 class UInputAction;
+class IEnemyInterface;
 /**
  * 
  */
@@ -25,10 +26,16 @@ private:
 	TObjectPtr<UInputAction> MoveAction;
 
 	void	Move(const FInputActionValue &InputActionValue);
+	
+	void	CurserTrace();
+	TObjectPtr<IEnemyInterface>	LastActor;
+	TObjectPtr<IEnemyInterface>	CurrentActor;
 public:
 	ARPGPlayerController();
-	
+	virtual void PlayerTick(float DeltaTime) override;
+
 protected:
 	virtual void BeginPlay() override;
 	virtual void SetupInputComponent() override;
+
 };

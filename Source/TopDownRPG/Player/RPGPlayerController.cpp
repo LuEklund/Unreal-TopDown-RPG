@@ -4,6 +4,7 @@
 #include "RPGPlayerController.h"
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
+#include "TopDownRPG/Interraction/EnemyInterface.h"
 
 
 ARPGPlayerController::ARPGPlayerController()
@@ -11,6 +12,72 @@ ARPGPlayerController::ARPGPlayerController()
 	//Multiplayer
 	bReplicates = true;
 }
+
+void ARPGPlayerController::PlayerTick(float DeltaTime)
+{
+	Super::PlayerTick(DeltaTime);
+
+	CurserTrace();
+}
+
+void ARPGPlayerController::CurserTrace()
+{
+	FHitResult	CurserHit;
+	GetHitResultUnderCursor(ECC_Visibility, false, CurserHit);
+	if (!CurserHit.bBlockingHit) return;
+	
+	LastActor = CurrentActor;
+	CurrentActor = Cast<IEnemyInterface>(CurserHit.GetActor());
+
+	/**
+	 * Line trace from cursor. There are several scenarios:
+	 *  A. LastActor is null && CurrentActor is null
+	 *		- Do nothing
+	 *	B. LastActor is null && CurrentActor is valid
+	 *		- Highlight CurrentActor
+	 *	C. LastActor is valid && CurrentActor is null
+	 *		- UnHighlight LastActor
+	 *	D. Both actors are valid, but LastActor != CurrentActor
+	 *		- UnHighlight LastActor, and Highlight CurrentActor
+	 *	E. Both actors are valid, and are the same actor
+	 *		- Do nothing
+	 */
+
+	if (LastActor == nullptr)
+	{
+		if (CurrentActor != nullptr)
+		{
+			// Case B
+			CurrentActor->HighLightActor();
+		}
+		else
+		{
+			// Case A - both are null, do nothing
+		}
+	}
+	else // LastActor is valid
+	{
+		if (CurrentActor == nullptr)
+		{
+			// Case C
+			LastActor->UnHighLightActor();
+		}
+		else // both actors are valid
+		{
+			if (LastActor != CurrentActor)
+			{
+				// Case D
+				LastActor->UnHighLightActor();
+				CurrentActor->HighLightActor();
+			}
+			else
+			{
+				// Case E - do nothing
+			}
+		}
+	}
+}
+
 
 void ARPGPlayerController::BeginPlay()
 {
@@ -56,3 +123,4 @@ void ARPGPlayerController::Move(const FInputActionValue& InputActionValue)
 	}
 	
 }
+
