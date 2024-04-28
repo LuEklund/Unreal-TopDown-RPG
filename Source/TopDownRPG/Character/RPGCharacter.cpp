@@ -7,6 +7,7 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "TopDownRPG/AbilitySystem/RPGAbilitySystemComponent.h"
 #include "TopDownRPG/Player/RPGPlayerController.h"
 #include "TopDownRPG/Player/RPGPlayerState.h"
 #include "TopDownRPG/UI/HUD/RPGHUD.h"
@@ -50,6 +51,7 @@ void ARPGCharacter::InitAbilityActorInfo()
 	check(RPGPlayerState);
 	AbilitySystemComponent = RPGPlayerState->GetAbilitySystemComponent();
 	AbilitySystemComponent->InitAbilityActorInfo(RPGPlayerState, this);
+	Cast<URPGAbilitySystemComponent>(AbilitySystemComponent)->AbilityActorInfoSet();
 	AttributeSet = RPGPlayerState->GetAttributeSet();
 
 	if (ARPGPlayerController *RPGPlayerController = Cast<ARPGPlayerController>(GetController()))
