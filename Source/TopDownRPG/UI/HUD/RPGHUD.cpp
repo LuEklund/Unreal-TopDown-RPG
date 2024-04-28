@@ -13,7 +13,8 @@ UOverlayWidgetController* ARPGHUD::GetOverlayWidgetController(const FWidgetContr
 	if (OverlayWidgetController == nullptr)
 	{
 		OverlayWidgetController = NewObject<UOverlayWidgetController>(this, OverlayWidgetControllerClass);
-		OverlayWidgetController->SetWidgetCOntrollerParams(Params);
+		OverlayWidgetController->SetWidgetControllerParams(Params);
+		OverlayWidgetController->BindCallbacksToDependencies();
 		return (OverlayWidgetController);
 	}
 	return (OverlayWidgetController);
@@ -29,7 +30,9 @@ void ARPGHUD::InitOverlay(APlayerController* PC, APlayerState* PS, UAbilitySyste
 	
 	const FWidgetControllerParams WidgetControllerParams(PC, PS, ASC, AS);
 	UOverlayWidgetController	*WidgetController = GetOverlayWidgetController(WidgetControllerParams);
+	
 	OverlayWidget->SetWidgetController(WidgetController);
+	WidgetController->BroadcastInitialValues();
 	
 	Widget->AddToViewport();
 }
