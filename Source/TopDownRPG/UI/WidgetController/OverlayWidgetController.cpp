@@ -34,12 +34,19 @@ void UOverlayWidgetController::BindCallbacksToDependencies()
 		RPGAttributeSet->GetMaxManaAttribute()).AddUObject(this, &UOverlayWidgetController::MaxManaChanged);
 
 	Cast<URPGAbilitySystemComponent>(AbilitySystemComponent)->EffectAssetTags.AddLambda(
-		[](const FGameplayTagContainer &AssetTags)
+		[this](const FGameplayTagContainer &AssetTags)
 		{
 			for (const FGameplayTag &Tag : AssetTags)
 			{
-				const FString Msg = FString::Printf(TEXT("GE tag: %s"), *Tag.ToString());
-				GEngine->AddOnScreenDebugMessage(-1, 4.f, FColor::Blue, Msg);
+				//"Message.HealthPotion".MatchesTag("Message") will return True, "Message".MatchesTag("Message.HealthPotion") will return False
+				FGameplayTag MessageTag = FGameplayTag::RequestGameplayTag(FName("Message"));
+				if (Tag.MatchesTag(MessageTag))
+				{
+					if (const FUIWidgetRow *Row = GetDataTableRowByTag<FUIWidgetRow>(MessageWidgetDataTable, Tag))
+					{
+						MessageWidgetRowDelegate.Broadcast(*Row);
+					}
+				}
 			}
 		}
 	);
