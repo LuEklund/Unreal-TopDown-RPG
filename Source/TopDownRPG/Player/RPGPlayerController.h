@@ -28,8 +28,9 @@ private:
 	void	Move(const FInputActionValue &InputActionValue);
 	
 	void	CurserTrace();
-	TObjectPtr<IEnemyInterface>	LastActor;
-	TObjectPtr<IEnemyInterface>	CurrentActor;
+
+	IEnemyInterface	*LastActor;
+	IEnemyInterface	*CurrentActor;
 public:
 	ARPGPlayerController();
 	virtual void PlayerTick(float DeltaTime) override;

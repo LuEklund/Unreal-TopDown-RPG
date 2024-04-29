@@ -34,6 +34,11 @@ void ARPGEnemy::UnHighLightActor()
 	Weapon->SetRenderCustomDepth(false);
 }
 
+int32 ARPGEnemy::GetPlayerLevel()
+{
+	return Level;
+}
+
 void ARPGEnemy::BeginPlay()
 {
 	Super::BeginPlay();
