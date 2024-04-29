@@ -3,6 +3,7 @@
 
 #include "RPGCharacterBase.h"
 #include "AbilitySystemComponent.h"
+#include "TopDownRPG/AbilitySystem/RPGAbilitySystemComponent.h"
 
 ARPGCharacterBase::ARPGCharacterBase()
 {
@@ -44,5 +45,13 @@ void ARPGCharacterBase::InitializeDefaultAttributes() const
 	ApplyEffectToSelf(DefaultPrimaryAttributes, 1);
 	ApplyEffectToSelf(DefaultSecondaryAttributes, 1);
 	ApplyEffectToSelf(DefaultVitalAttributes, 1);
+}
+
+void ARPGCharacterBase::AddCharacterAbilities()
+{
+	if (!HasAuthority()) return;
+	URPGAbilitySystemComponent *RPGASC = CastChecked<URPGAbilitySystemComponent>(AbilitySystemComponent);
+	RPGASC->AddCharacterAbilities(StartupAbilities);
+	
 }
 

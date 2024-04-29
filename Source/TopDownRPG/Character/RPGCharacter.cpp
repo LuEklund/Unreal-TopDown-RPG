@@ -34,7 +34,10 @@ void ARPGCharacter::PossessedBy(AController* NewController)
 	Super::PossessedBy(NewController);
 	
 	// Init ability actor info for the server
+	//Attributes
 	InitAbilityActorInfo();
+	//Abilities
+	AddCharacterAbilities();
 }
 
 void ARPGCharacter::OnRep_PlayerState()
