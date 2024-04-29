@@ -17,7 +17,9 @@ UCLASS(Blueprintable, BlueprintType)
 class TOPDOWNRPG_API UAttributeMenuWidgetController : public URPGWidgetController
 {
 	GENERATED_BODY()
-
+private:
+	void	BroadcastAttributeInfo(const FGameplayTag &AttributeTag, const FGameplayAttribute &Attribute) const;
+	
 protected:
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UAttributeInfo>	AttributeInfo;

@@ -13,7 +13,6 @@
 	GAMEPLAYATTRIBUTE_VALUE_SETTER(PropertyName) \
 	GAMEPLAYATTRIBUTE_VALUE_INITTER(PropertyName)
 
-
 USTRUCT()
 struct FEffectProperties
 {
@@ -46,6 +45,10 @@ struct FEffectProperties
 	ACharacter				*TargetCharacter = nullptr;
 };
 
+// typedef TBaseStaticDelegateInstance<FGameplayAttribute(), FDefaultDelegateUserPolicy>::FFuncPtr FAttributeFuncPtr;
+template<class T>
+using TStaticFunPtr = typename TBaseStaticDelegateInstance<T, FDefaultDelegateUserPolicy>::FFuncPtr;
+
 /**
  * 
  */
@@ -62,6 +65,12 @@ public:
 	virtual void	PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue) override;
 	virtual void	PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data) override;
 
+	/*	TMap that contains FGameplayTag and Function pointers.
+	 *	The function takes zero parameters and returns a FGameplayAttribute.
+	 */
+	TMap<FGameplayTag, TStaticFunPtr<FGameplayAttribute()>>	TagsToAttributes;
+
+	
 	/*
 	 * Primary Attributes
 	 */
@@ -104,9 +113,9 @@ public:
 	FGameplayAttributeData	CriticalHitDamage;
 	ATTRIBUTE_ACCESSORS(URPGAttributeSet, CriticalHitDamage);
 
-	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_CriticalResistance, Category="Primary Attributes")
-	FGameplayAttributeData	CriticalResistance;
-	ATTRIBUTE_ACCESSORS(URPGAttributeSet, CriticalResistance);
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_CriticalHitResistance, Category="Primary Attributes")
+	FGameplayAttributeData	CriticalHitResistance;
+	ATTRIBUTE_ACCESSORS(URPGAttributeSet, CriticalHitResistance);
 
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_HealthRegeneration, Category="Primary Attributes")
 	FGameplayAttributeData	HealthRegeneration;
@@ -170,7 +179,7 @@ public:
 	UFUNCTION()
 	void OnRep_CriticalHitDamage(const FGameplayAttributeData &OldCriticalHitDamage) const;
 	UFUNCTION()
-	void OnRep_CriticalResistance(const FGameplayAttributeData &OldCriticalResistance) const;
+	void OnRep_CriticalHitResistance(const FGameplayAttributeData &OldCriticalHitResistance) const;
 	UFUNCTION()
 	void OnRep_HealthRegeneration(const FGameplayAttributeData &OldHealthRegeneration) const;
 	UFUNCTION()
