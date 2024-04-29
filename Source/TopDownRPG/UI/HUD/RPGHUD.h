@@ -20,14 +20,16 @@ class TOPDOWNRPG_API ARPGHUD : public AHUD
 	GENERATED_BODY()
 
 public:
-	UPROPERTY()
-	TObjectPtr<URPGUserWidget>	OverlayWidget;
+	
 
 	UOverlayWidgetController *GetOverlayWidgetController(const FWidgetControllerParams &Params);
 
 	void InitOverlay(APlayerController *PC, APlayerState *PS, UAbilitySystemComponent *ASC, UAttributeSet *AS);
 
 private:
+	UPROPERTY()
+	TObjectPtr<URPGUserWidget>	OverlayWidget;
+	
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<URPGUserWidget>	OverlayWidgetClass;
 
