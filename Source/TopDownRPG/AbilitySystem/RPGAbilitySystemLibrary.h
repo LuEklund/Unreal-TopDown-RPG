@@ -6,6 +6,7 @@
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "RPGAbilitySystemLibrary.generated.h"
 
+class UAttributeMenuWidgetController;
 class UOverlayWidgetController;
 /**
  * 
@@ -17,4 +18,7 @@ class TOPDOWNRPG_API URPGAbilitySystemLibrary : public UBlueprintFunctionLibrary
 public:
 	UFUNCTION(BlueprintPure, Category="RPGAbilitySystemLibrary|WidgetController")
 	static UOverlayWidgetController	*GetOverlayWidgetController(const UObject *WorldContextObject);
+
+	UFUNCTION(BlueprintPure, Category="RPGAbilitySystemLibrary|WidgetController")
+	static UAttributeMenuWidgetController	*GetAttributeMenuWidgetController(const UObject *WorldContextObject);
 };

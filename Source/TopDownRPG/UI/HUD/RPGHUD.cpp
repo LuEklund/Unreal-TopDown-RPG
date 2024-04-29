@@ -4,6 +4,7 @@
 #include "RPGHUD.h"
 #include "Blueprint/UserWidget.h"
 #include "TopDownRPG/UI/Widget/RPGUserWidget.h"
+#include "TopDownRPG/UI/WidgetController/AttributeMenuWidgetController.h"
 #include "TopDownRPG/UI/WidgetController/OverlayWidgetController.h"
 
 
@@ -15,9 +16,19 @@ UOverlayWidgetController* ARPGHUD::GetOverlayWidgetController(const FWidgetContr
 		OverlayWidgetController = NewObject<UOverlayWidgetController>(this, OverlayWidgetControllerClass);
 		OverlayWidgetController->SetWidgetControllerParams(Params);
 		OverlayWidgetController->BindCallbacksToDependencies();
-		return (OverlayWidgetController);
 	}
 	return (OverlayWidgetController);
+}
+
+UAttributeMenuWidgetController* ARPGHUD::GetAttributeMenuWidgetController(const FWidgetControllerParams& Params)
+{
+	if (AttributeMenuWidgetController == nullptr)
+	{
+		AttributeMenuWidgetController = NewObject<UAttributeMenuWidgetController>(this, AttributeMenuWidgetControllerClass);
+		AttributeMenuWidgetController->SetWidgetControllerParams(Params);
+		AttributeMenuWidgetController->BindCallbacksToDependencies();
+	}
+	return AttributeMenuWidgetController;
 }
 
 void ARPGHUD::InitOverlay(APlayerController* PC, APlayerState* PS, UAbilitySystemComponent* ASC, UAttributeSet* AS)
