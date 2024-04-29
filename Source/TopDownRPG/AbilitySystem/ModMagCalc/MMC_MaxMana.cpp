@@ -1,21 +1,21 @@
 
 
 
-#include "MMC_MaxHealth.h"
+#include "MMC_MaxMana.h"
 
 #include "TopDownRPG/AbilitySystem/RPGAttributeSet.h"
 #include "TopDownRPG/Interraction/CombatInterface.h"
 
-UMMC_MaxHealth::UMMC_MaxHealth()
+UMMC_MaxMana::UMMC_MaxMana()
 {
-	VigorDef.AttributeToCapture = URPGAttributeSet::GetVigorAttribute();
-	VigorDef.AttributeSource = EGameplayEffectAttributeCaptureSource::Target;
-	VigorDef.bSnapshot = false;
+	IntelligenceDef.AttributeToCapture = URPGAttributeSet::GetIntelligenceAttribute();
+	IntelligenceDef.AttributeSource = EGameplayEffectAttributeCaptureSource::Target;
+	IntelligenceDef.bSnapshot = false;
 
-	RelevantAttributesToCapture.Add(VigorDef);
+	RelevantAttributesToCapture.Add(IntelligenceDef);
 }
 
-float UMMC_MaxHealth::CalculateBaseMagnitude_Implementation(const FGameplayEffectSpec& Spec) const
+float UMMC_MaxMana::CalculateBaseMagnitude_Implementation(const FGameplayEffectSpec& Spec) const
 {
 	// Gather tags from source and target
 	const FGameplayTagContainer *SourceTags = Spec.CapturedSourceTags.GetAggregatedTags();
@@ -25,12 +25,12 @@ float UMMC_MaxHealth::CalculateBaseMagnitude_Implementation(const FGameplayEffec
 	EvaluateParameters.SourceTags = SourceTags;
 	EvaluateParameters.TargetTags = TargetTags;
 
-	float Vigor = 0.f;
-	GetCapturedAttributeMagnitude(VigorDef, Spec, EvaluateParameters, Vigor);
-	Vigor = FMath::Max<float>(Vigor, 0.f);
+	float Intelligence = 0.f;
+	GetCapturedAttributeMagnitude(IntelligenceDef, Spec, EvaluateParameters, Intelligence);
+	Intelligence = FMath::Max<float>(Intelligence, 0.f);
 
 	ICombatInterface *CombatInterface = Cast<ICombatInterface>(Spec.GetContext().GetSourceObject());
 	const int32 PlayerLevel = CombatInterface->GetPlayerLevel();
 	
-	return (80.f + 2.5f * Vigor + 10.f * PlayerLevel);
+	return (50.f + 2.5f * Intelligence + 15.f * PlayerLevel);
 }
