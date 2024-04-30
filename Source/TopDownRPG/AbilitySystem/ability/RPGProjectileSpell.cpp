@@ -3,6 +3,8 @@
 
 #include "RPGProjectileSpell.h"
 
+#include "AbilitySystemBlueprintLibrary.h"
+#include "AbilitySystemComponent.h"
 #include "TopDownRPG/Actor/RPGProjectile.h"
 #include "TopDownRPG/Interraction/CombatInterface.h"
 
@@ -37,8 +39,9 @@ void URPGProjectileSpell::SpawnProjectile(const FVector &ProjectileTargetLocatio
 			GetOwningActorFromActorInfo(),
 			Cast<APawn>(GetOwningActorFromActorInfo()),
 			ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
-		
-		//TODO: Give the projectile a Gameplay Effect Spec for causing Damage.
+
+		const UAbilitySystemComponent *SourceASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetAvatarActorFromActorInfo());
+		Projectile->DamageEffectSpecHandle = SourceASC->MakeOutgoingSpec(DamageEffectClass, GetAbilityLevel(), SourceASC->MakeEffectContext());
 		
 		Projectile->FinishSpawning(SpawnTransform);
 	}
