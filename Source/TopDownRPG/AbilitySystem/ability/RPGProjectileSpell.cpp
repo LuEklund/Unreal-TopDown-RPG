@@ -15,7 +15,7 @@ void URPGProjectileSpell::ActivateAbility(const FGameplayAbilitySpecHandle Handl
 
 }
 
-void URPGProjectileSpell::SpawnProjectile()
+void URPGProjectileSpell::SpawnProjectile(const FVector &ProjectileTargetLocation)
 {
 	const bool bIsServer = GetAvatarActorFromActorInfo()->HasAuthority();
 	if (bIsServer == false)	return;
@@ -23,12 +23,13 @@ void URPGProjectileSpell::SpawnProjectile()
 	if (ICombatInterface *CombatInterface = Cast<ICombatInterface>(GetAvatarActorFromActorInfo()))
 	{
 		const FVector SocketLocation = CombatInterface->GetCombatSocketLocation();
-
-		//TODO: Set the Projectile Rotation
+		FRotator	Rotation = (ProjectileTargetLocation - SocketLocation).Rotation();
+		Rotation.Pitch = 0.f;
+		
 		
 		FTransform SpawnTransform;
 		SpawnTransform.SetLocation(SocketLocation);
-		// GetAvatarActorFromActorInfo()->GetActorForwardVector();
+		SpawnTransform.SetRotation(Rotation.Quaternion());
 
 		ARPGProjectile *Projectile = GetWorld()->SpawnActorDeferred<ARPGProjectile>(
 			ProjectileClass,
@@ -36,6 +37,7 @@ void URPGProjectileSpell::SpawnProjectile()
 			GetOwningActorFromActorInfo(),
 			Cast<APawn>(GetOwningActorFromActorInfo()),
 			ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+		
 		//TODO: Give the projectile a Gameplay Effect Spec for causing Damage.
 		
 		Projectile->FinishSpawning(SpawnTransform);

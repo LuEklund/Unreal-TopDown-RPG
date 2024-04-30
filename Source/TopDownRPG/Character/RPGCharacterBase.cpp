@@ -3,10 +3,15 @@
 
 #include "RPGCharacterBase.h"
 #include "AbilitySystemComponent.h"
+#include "Components/CapsuleComponent.h"
 #include "TopDownRPG/AbilitySystem/RPGAbilitySystemComponent.h"
 
 ARPGCharacterBase::ARPGCharacterBase()
 {
+
+	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
+	GetMesh()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
+	
 	PrimaryActorTick.bCanEverTick = true;
 	Weapon = CreateDefaultSubobject<USkeletalMeshComponent>("Weapon");
 	Weapon->SetupAttachment(GetMesh(), FName("WeaponHandSocket"));

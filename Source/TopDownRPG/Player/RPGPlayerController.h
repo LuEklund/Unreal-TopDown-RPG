@@ -29,7 +29,12 @@ private:
 
 	UPROPERTY(EditAnywhere, Category="Input")
 	TObjectPtr<UInputAction> MoveAction;
+	UPROPERTY(EditAnywhere, Category="Input")
+    TObjectPtr<UInputAction> ShiftAction;
 
+	bool bShiftDown = false;
+	void	ShiftPressed() {bShiftDown = true; }
+	void	ShiftReleased() {bShiftDown = false; }
 	void	Move(const FInputActionValue &InputActionValue);
 	
 	void	CursorTrace();
@@ -44,6 +49,7 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category="Input")
 	TObjectPtr<URPGInputConfig>	InputConfig;
+	
 
 	UPROPERTY()
 	TObjectPtr<URPGAbilitySystemComponent>	RPGAbilitySystemComponent;

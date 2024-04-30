@@ -76,7 +76,7 @@ void ARPGPlayerController::CursorTrace()
 
 void ARPGPlayerController::AbilityInputTagPressed(FGameplayTag InputTag)
 {
-	if (InputTag.MatchesTagExact(FRPGGameplayTags::Get().Input_Mouse_RMB))
+	if (InputTag.MatchesTagExact(FRPGGameplayTags::Get().Input_Mouse_LMB))
 	{
 		bTargeting = CurrentActor != nullptr;
 		bAutoRunning = false;
@@ -86,7 +86,7 @@ void ARPGPlayerController::AbilityInputTagPressed(FGameplayTag InputTag)
 
 void ARPGPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
 {
-	if (!InputTag.MatchesTagExact(FRPGGameplayTags::Get().Input_Mouse_RMB))
+	if (!InputTag.MatchesTagExact(FRPGGameplayTags::Get().Input_Mouse_LMB))
 	{
 		if (GetASC())
 		{
@@ -94,15 +94,12 @@ void ARPGPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
 		}
 		return ;
 	}
-	if (bTargeting)
-    {
-    	if (GetASC())
-    	{
-    		GetASC()->AbilityInputTagReleased(InputTag);
-    	}
-    }
-	else
+	if (GetASC())
 	{
+		GetASC()->AbilityInputTagReleased(InputTag);
+	}
+	if (!bTargeting && !bShiftDown)
+    {
 		const APawn *ControlledPawn = GetPawn();
 		if (FollowTime <= ShortPressThreshHold && ControlledPawn)
 		{
@@ -120,12 +117,12 @@ void ARPGPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
 		}
 		FollowTime = 0;
 		bTargeting = false;
-	}
+    }
 }
 
 void ARPGPlayerController::AbilityInputTagHeld(FGameplayTag InputTag)
 {
-	if (!InputTag.MatchesTagExact(FRPGGameplayTags::Get().Input_Mouse_RMB))
+	if (!InputTag.MatchesTagExact(FRPGGameplayTags::Get().Input_Mouse_LMB))
 	{
 		if (GetASC())
 		{
@@ -133,7 +130,7 @@ void ARPGPlayerController::AbilityInputTagHeld(FGameplayTag InputTag)
 		}
 		return ;
 	}
-	if (bTargeting)
+	if (bTargeting || bShiftDown)
 	{
 		if (GetASC())
 		{
@@ -181,6 +178,8 @@ void ARPGPlayerController::SetupInputComponent()
 	Super::SetupInputComponent();
 	URPGInputComponent *RPGInputComponent = CastChecked<URPGInputComponent>(InputComponent);
 	RPGInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ARPGPlayerController::Move);
+	RPGInputComponent->BindAction(ShiftAction, ETriggerEvent::Triggered, this, &ARPGPlayerController::ShiftPressed);
+	RPGInputComponent->BindAction(ShiftAction, ETriggerEvent::Completed, this, &ARPGPlayerController::ShiftReleased);
 	RPGInputComponent->BindAbilityActions(
 		InputConfig,
 		this,
