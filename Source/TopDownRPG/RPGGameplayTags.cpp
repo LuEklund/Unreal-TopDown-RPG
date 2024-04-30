@@ -68,32 +68,32 @@ void FRPGGameplayTags::InitializeNativeGameplayTags()
 
 	
 	// Input Tags
-	FGameplayTag InputTag_LMB = UGameplayTagsManager::Get().AddNativeGameplayTag(
+	FGameplayTag Input_Mouse_LMB = UGameplayTagsManager::Get().AddNativeGameplayTag(
 	FName("Input.Mouse.LMB"),
 	FString("Left Mouse Button")
 );
 
-	FGameplayTag InputTag_RMB = UGameplayTagsManager::Get().AddNativeGameplayTag(
+	FGameplayTag Input_Mouse_RMB = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Input.Mouse.RMB"),
 		FString("Right Mouse Button")
 	);
 
-	FGameplayTag InputTag_1 = UGameplayTagsManager::Get().AddNativeGameplayTag(
+	FGameplayTag Input_Keyboard_1 = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Input.Keyboard.1"),
 		FString("Number Key 1")
 	);
 
-	FGameplayTag InputTag_2 = UGameplayTagsManager::Get().AddNativeGameplayTag(
+	FGameplayTag Input_Keyboard_2 = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Input.Keyboard.2"),
 		FString("Number Key 2")
 	);
 
-	FGameplayTag InputTag_3 = UGameplayTagsManager::Get().AddNativeGameplayTag(
+	FGameplayTag Input_Keyboard_3 = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Input.Keyboard.3"),
 		FString("Number Key 3")
 	);
 
-	FGameplayTag InputTag_4 = UGameplayTagsManager::Get().AddNativeGameplayTag(
+	FGameplayTag Input_Keyboard_4 = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Input.Keyboard.4"),
 		FString("Number Key 4")
 	);

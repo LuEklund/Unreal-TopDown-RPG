@@ -35,12 +35,12 @@ public:
  FGameplayTag Attribute_Secondary_MaxHealth;
  FGameplayTag Attribute_Secondary_MaxMana;
 
- FGameplayTag InputTag_LMB;
- FGameplayTag InputTag_RMB;
- FGameplayTag InputTag_1;
- FGameplayTag InputTag_2;
- FGameplayTag InputTag_3;
- FGameplayTag InputTag_4;
+ FGameplayTag Input_Mouse_LMB;
+ FGameplayTag Input_Mouse_RMB;
+ FGameplayTag Input_Keyboard_1;
+ FGameplayTag Input_Keyboard_2;
+ FGameplayTag Input_Keyboard_3;
+ FGameplayTag Input_Keyboard_4;
 
 
 };

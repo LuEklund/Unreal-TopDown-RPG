@@ -2,10 +2,22 @@
 
 
 #include "RPGPlayerController.h"
+
+#include "AbilitySystemBlueprintLibrary.h"
 #include "EnhancedInputSubsystems.h"
-#include "EnhancedInputComponent.h"
+#include "TopDownRPG/AbilitySystem/RPGAbilitySystemComponent.h"
+#include "TopDownRPG/Input/RPGInputComponent.h"
 #include "TopDownRPG/Interraction/EnemyInterface.h"
 
+
+URPGAbilitySystemComponent* ARPGPlayerController::GetASC()
+{
+	if (RPGAbilitySystemComponent == nullptr)
+	{
+		RPGAbilitySystemComponent = Cast<URPGAbilitySystemComponent>(UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetPawn<APawn>()));
+	}
+	return RPGAbilitySystemComponent;
+}
 
 ARPGPlayerController::ARPGPlayerController()
 {
@@ -78,6 +90,23 @@ void ARPGPlayerController::CurserTrace()
 	}
 }
 
+void ARPGPlayerController::AvilityInputTagPressed(FGameplayTag InputTag)
+{
+	// GEngine->AddOnScreenDebugMessage(1, 3.f, FColor::Red, *InputTag.ToString());
+}
+
+void ARPGPlayerController::AvilityInputTagReleased(FGameplayTag InputTag)
+{
+	if (GetASC() == nullptr) return;
+	GetASC()->AbilityInputTagReleased(InputTag);
+}
+
+void ARPGPlayerController::AvilityInputTagHeld(FGameplayTag InputTag)
+{
+	if (GetASC() == nullptr) return;
+	GetASC()->AbilityInputTagHeld(InputTag);
+}
+
 
 void ARPGPlayerController::BeginPlay()
 {
@@ -103,8 +132,14 @@ void ARPGPlayerController::BeginPlay()
 void ARPGPlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
-	UEnhancedInputComponent *EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(InputComponent);
-	EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ARPGPlayerController::Move);
+	URPGInputComponent *RPGInputComponent = CastChecked<URPGInputComponent>(InputComponent);
+	RPGInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ARPGPlayerController::Move);
+	RPGInputComponent->BindAbilityActions(
+		InputConfig,
+		this,
+		&ARPGPlayerController::AvilityInputTagPressed,
+		&ARPGPlayerController::AvilityInputTagReleased,
+		&ARPGPlayerController::AvilityInputTagHeld);
 	
 }
 
