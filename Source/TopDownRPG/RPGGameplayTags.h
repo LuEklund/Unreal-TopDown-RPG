@@ -19,6 +19,8 @@ public:
  static  const FRPGGameplayTags &Get() {return GameplayTags;}
  static  void  InitializeNativeGameplayTags();
 
+ ~FRPGGameplayTags();
+
  FGameplayTag Attribute_Primary_Strength;
  FGameplayTag Attribute_Primary_Intelligence;
  FGameplayTag Attribute_Primary_Resilience;
