@@ -34,17 +34,14 @@ void URPGInputComponent::BindAbilityActions(const URPGInputConfig* InputConfig, 
 			if (PressedFunc)
 			{
 				BindAction(Action.InputAction, ETriggerEvent::Started, Object, PressedFunc, Action.InputTag);
-				UE_LOG(LogTemp, Warning, TEXT("%s: %s, - PressedFunc"), *Action.InputAction->GetName(), *Action.InputTag.GetTagName().ToString());
 			}
 			if (ReleasedFunc)
 			{
 				BindAction(Action.InputAction, ETriggerEvent::Completed, Object, ReleasedFunc, Action.InputTag);
-				UE_LOG(LogTemp, Warning, TEXT("%s: %s, - ReleasedFunc"), *Action.InputAction->GetName(), *Action.InputTag.GetTagName().ToString());
 			}
 			if (HeldFunc)
 			{
 				BindAction(Action.InputAction, ETriggerEvent::Triggered, Object, HeldFunc, Action.InputTag);
-				UE_LOG(LogTemp, Warning, TEXT("%s: %s, - HeldFunc"), *Action.InputAction->GetName(), *Action.InputTag.GetTagName().ToString());
 			}
 		}
 	}

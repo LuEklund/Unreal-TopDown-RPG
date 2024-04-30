@@ -60,60 +60,18 @@ void ARPGPlayerController::AutoRun()
 
 void ARPGPlayerController::CursorTrace()
 {
-	FHitResult	CurserHit;
-	GetHitResultUnderCursor(ECC_Visibility, false, CurserHit);
-	if (!CurserHit.bBlockingHit) return;
+	GetHitResultUnderCursor(ECC_Visibility, false, CursorHit);
+	if (!CursorHit.bBlockingHit) return;
 	
 	LastActor = CurrentActor;
-	CurrentActor = Cast<IEnemyInterface>(CurserHit.GetActor());
+	CurrentActor = Cast<IEnemyInterface>(CursorHit.GetActor());
 
-	/**
-	 * Line trace from cursor. There are several scenarios:
-	 *  A. LastActor is null && CurrentActor is null
-	 *		- Do nothing
-	 *	B. LastActor is null && CurrentActor is valid
-	 *		- Highlight CurrentActor
-	 *	C. LastActor is valid && CurrentActor is null
-	 *		- UnHighlight LastActor
-	 *	D. Both actors are valid, but LastActor != CurrentActor
-	 *		- UnHighlight LastActor, and Highlight CurrentActor
-	 *	E. Both actors are valid, and are the same actor
-	 *		- Do nothing
-	 */
+	if (LastActor != CurrentActor)
+	{
+		if (LastActor) LastActor->UnHighLightActor();
+		if (CurrentActor) CurrentActor->HighLightActor();
+	}
 
-	if (LastActor == nullptr)
-	{
-		if (CurrentActor != nullptr)
-		{
-			// Case B
-			CurrentActor->HighLightActor();
-		}
-		else
-		{
-			// Case A - both are null, do nothing
-		}
-	}
-	else // LastActor is valid
-	{
-		if (CurrentActor == nullptr)
-		{
-			// Case C
-			LastActor->UnHighLightActor();
-		}
-		else // both actors are valid
-		{
-			if (LastActor != CurrentActor)
-			{
-				// Case D
-				LastActor->UnHighLightActor();
-				CurrentActor->HighLightActor();
-			}
-			else
-			{
-				// Case E - do nothing
-			}
-		}
-	}
 }
 
 void ARPGPlayerController::AbilityInputTagPressed(FGameplayTag InputTag)
@@ -145,7 +103,7 @@ void ARPGPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
     }
 	else
 	{
-		APawn *ControlledPawn = GetPawn();
+		const APawn *ControlledPawn = GetPawn();
 		if (FollowTime <= ShortPressThreshHold && ControlledPawn)
 		{
 			if (UNavigationPath *NavPath = UNavigationSystemV1::FindPathToLocationSynchronously(this, ControlledPawn->GetActorLocation(), CachedDestination))
@@ -185,10 +143,9 @@ void ARPGPlayerController::AbilityInputTagHeld(FGameplayTag InputTag)
 	else
 	{
 		FollowTime += GetWorld()->GetDeltaSeconds();
-		FHitResult Hit;
-		if (GetHitResultUnderCursor(ECC_Visibility, false, Hit))
+		if (CursorHit.bBlockingHit)
 		{
-			CachedDestination = Hit.ImpactPoint;
+			CachedDestination = CursorHit.ImpactPoint;
 		}
 		if (APawn *ControllerPawn = GetPawn())
 		{
