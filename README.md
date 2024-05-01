@@ -1,4 +1,5 @@
 # Unreal-TopDown-RPG
+![](https://github.com/LuEklund/Unreal-TopDown-RPG/blob/master/TopDownRPG2.gif)
 ![](https://github.com/LuEklund/Unreal-TopDown-RPG/blob/master/TopDownRPG.gif)
 ![](https://github.com/LuEklund/Unreal-TopDown-RPG/blob/master/RPG.png)
 
