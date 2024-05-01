@@ -83,3 +83,14 @@ void URPGAbilitySystemLibrary::GiveStartupAbilities(const UObject* WorldContextO
 		ASC->GiveAbility(AbilitySpec);
 	}
 }
+
+UCharacterClassInfo* URPGAbilitySystemLibrary::GetCharacterClassInfo(const UObject* WorldContextObject)
+{
+	ARPGGameModeBase *RPGGM = Cast<ARPGGameModeBase>(UGameplayStatics::GetGameMode(WorldContextObject));
+	if (!RPGGM)
+	{
+		return nullptr;
+	}
+	
+	return (RPGGM->CharacterClassInfo);
+}
