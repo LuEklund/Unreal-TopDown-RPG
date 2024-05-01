@@ -56,8 +56,7 @@ UCLASS()
 class TOPDOWNRPG_API URPGAttributeSet : public UAttributeSet
 {
 	GENERATED_BODY()
-private:
-	void	SetEffectProperties(const FGameplayEffectModCallbackData& Data, FEffectProperties &Props) const;
+
 public:
 	URPGAttributeSet();
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
@@ -191,7 +190,10 @@ public:
 	void OnRep_HealthRegeneration(const FGameplayAttributeData &OldHealthRegeneration) const;
 	UFUNCTION()
 	void OnRep_ManaRegeneration(const FGameplayAttributeData &OldManaRegeneration) const;
-
+	
+private:
+	void	SetEffectProperties(const FGameplayEffectModCallbackData& Data, FEffectProperties &Props) const;
+	void	ShowFloatingText(const FEffectProperties &Props, float Damage);
 
 	
 };

@@ -6,9 +6,11 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "GameplayEffectExtension.h"
 #include "GameFramework/Character.h"
+#include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
 #include "TopDownRPG/RPGGameplayTags.h"
 #include "TopDownRPG/Interraction/CombatInterface.h"
+#include "TopDownRPG/Player/RPGPlayerController.h"
 
 
 URPGAttributeSet::URPGAttributeSet()
@@ -116,6 +118,7 @@ void URPGAttributeSet::SetEffectProperties(const FGameplayEffectModCallbackData&
 	}
 }
 
+
 void URPGAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)
 {
 	Super::PostGameplayEffectExecute(Data);
@@ -153,10 +156,22 @@ void URPGAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbac
 				TagContainer.AddTag(FRPGGameplayTags::Get().Effects_HitReact);
 				Props.TargetASC->TryActivateAbilitiesByTag(TagContainer);
 			}
+			ShowFloatingText(Props, LocalIncomingDamage);
 		}
 	}
-
 }
+
+void URPGAttributeSet::ShowFloatingText(const FEffectProperties& Props, const float Damage)
+{
+	if (Props.SourceCharacter != Props.TargetCharacter)
+	{
+		if (ARPGPlayerController *PC = Cast<ARPGPlayerController>(UGameplayStatics::GetPlayerController(Props.SourceCharacter, 0)))
+		{
+			PC->ShowDamageNumber(Damage, Props.TargetCharacter);
+		}
+	}
+}
+
 
 void URPGAttributeSet::OnRep_Health(const FGameplayAttributeData& OldHealth) const
 {

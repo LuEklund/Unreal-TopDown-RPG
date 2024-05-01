@@ -12,6 +12,9 @@
 #include "TopDownRPG/AbilitySystem/RPGAbilitySystemComponent.h"
 #include "TopDownRPG/Input/RPGInputComponent.h"
 #include "TopDownRPG/Interraction/EnemyInterface.h"
+#include "GameFramework/Character.h"
+#include "TopDownRPG/UI/Widget/DamageTextComponent.h"
+
 
 
 URPGAbilitySystemComponent* ARPGPlayerController::GetASC()
@@ -39,6 +42,18 @@ void ARPGPlayerController::PlayerTick(float DeltaTime)
 	CursorTrace();
 	AutoRun();
 
+}
+
+void ARPGPlayerController::ShowDamageNumber_Implementation(float DamageAmount, ACharacter *TargetCharacter)
+{
+	if (IsValid(TargetCharacter) && DamageTextComponentClass)
+	{
+		UDamageTextComponent *DamageText = NewObject<UDamageTextComponent>(TargetCharacter, DamageTextComponentClass);
+		DamageText->RegisterComponent();
+		DamageText->AttachToComponent(TargetCharacter->GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
+		DamageText->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
+		DamageText->SetDamageText(DamageAmount);
+	}
 }
 
 void ARPGPlayerController::AutoRun()
