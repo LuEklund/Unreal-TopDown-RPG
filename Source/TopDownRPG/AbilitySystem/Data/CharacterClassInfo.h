@@ -33,6 +33,7 @@ class TOPDOWNRPG_API UCharacterClassInfo : public UDataAsset
 {
 	GENERATED_BODY()
 
+public:
 	UPROPERTY(EditDefaultsOnly, Category="Character Class Deafults")
 	TMap<ECharacterClass, FCharacterDefaultInfo> CharacterClassInformation;
 	
@@ -41,6 +42,5 @@ class TOPDOWNRPG_API UCharacterClassInfo : public UDataAsset
 
 	UPROPERTY(EditDefaultsOnly, Category="Common Class Deafults")
 	TSubclassOf<UGameplayEffect> VitalAttributes;
-
 	FCharacterDefaultInfo	GetClassDefaultInfo(ECharacterClass CharacterClass);
 };

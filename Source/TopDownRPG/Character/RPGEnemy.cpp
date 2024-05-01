@@ -6,6 +6,7 @@
 #include "Components/WidgetComponent.h"
 #include "TopDownRPG/TopDownRPG.h"
 #include "TopDownRPG/AbilitySystem/RPGAbilitySystemComponent.h"
+#include "TopDownRPG/AbilitySystem/RPGAbilitySystemLibrary.h"
 #include "TopDownRPG/AbilitySystem/RPGAttributeSet.h"
 #include "TopDownRPG/UI/Widget/RPGUserWidget.h"
 
@@ -78,6 +79,11 @@ void ARPGEnemy::InitAbilityActorInfo()
 	Cast<URPGAbilitySystemComponent>(AbilitySystemComponent)->AbilityActorInfoSet();
 	
 	InitializeDefaultAttributes();
+}
+
+void ARPGEnemy::InitializeDefaultAttributes() const
+{
+	URPGAbilitySystemLibrary::InitializeDefaultAttributes(this, CharacterClass, Level, AbilitySystemComponent);
 }
 
 

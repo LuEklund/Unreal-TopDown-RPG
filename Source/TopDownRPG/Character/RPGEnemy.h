@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "RPGCharacterBase.h"
+#include "TopDownRPG/AbilitySystem/Data/CharacterClassInfo.h"
 #include "TopDownRPG/Interraction/EnemyInterface.h"
 #include "TopDownRPG/UI/WidgetController/OverlayWidgetController.h"
 #include "RPGEnemy.generated.h"
@@ -36,9 +37,12 @@ public:
 protected:
 	virtual void BeginPlay() override;
 	virtual void InitAbilityActorInfo() override;
+	virtual void	InitializeDefaultAttributes() const override;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Character class defaults")
 	int32	Level = 1;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Character class defaults")
+	ECharacterClass	CharacterClass = ECharacterClass::Warrior;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TObjectPtr<UWidgetComponent>	HealthBar;
