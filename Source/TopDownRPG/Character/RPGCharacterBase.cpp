@@ -40,6 +40,11 @@ UAbilitySystemComponent* ARPGCharacterBase::GetAbilitySystemComponent() const
 	return AbilitySystemComponent;
 }
 
+UAnimMontage* ARPGCharacterBase::GetHitReactMontage_Implementation()
+{
+	return HitReactMontage;
+}
+
 void ARPGCharacterBase::InitAbilityActorInfo()
 {
 	

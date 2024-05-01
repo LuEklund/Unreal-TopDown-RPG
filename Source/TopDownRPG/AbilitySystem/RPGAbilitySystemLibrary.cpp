@@ -8,7 +8,6 @@
 #include "TopDownRPG/Player/RPGPlayerState.h"
 #include "TopDownRPG/UI/HUD/RPGHUD.h"
 #include "TopDownRPG/UI/WidgetController/RPGWidgetController.h"
-// #include "TopDownRPG/AbilitySystem/Data/CharacterClassInfo.h"
 
 
 UOverlayWidgetController* URPGAbilitySystemLibrary::GetOverlayWidgetController(const UObject* WorldContextObject)
@@ -67,4 +66,20 @@ void URPGAbilitySystemLibrary::InitializeDefaultAttributes(const UObject *WorldC
 	 	const FGameplayEffectSpecHandle VitalAttributeSpecHandle = ASC->MakeOutgoingSpec(CharacterClassInfo->VitalAttributes, Level, VitalAttributeContextHandle);
 	 	ASC->ApplyGameplayEffectSpecToSelf(*VitalAttributeSpecHandle.Data.Get());
 	 }
+}
+
+void URPGAbilitySystemLibrary::GiveStartupAbilities(const UObject* WorldContextObject, UAbilitySystemComponent* ASC)
+{
+	ARPGGameModeBase *RPGGM = Cast<ARPGGameModeBase>(UGameplayStatics::GetGameMode(WorldContextObject));
+	if (!RPGGM)
+	{
+		return ;
+	}
+	
+	UCharacterClassInfo *CharacterClassInfo = RPGGM->CharacterClassInfo;
+	for (TSubclassOf<UGameplayAbility> AbilityClass  : CharacterClassInfo->CommonAbilities)
+	{
+		FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(AbilityClass, 1);
+		ASC->GiveAbility(AbilitySpec);
+	}
 }
