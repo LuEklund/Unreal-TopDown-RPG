@@ -5,8 +5,10 @@
 #include "CoreMinimal.h"
 #include "RPGCharacterBase.h"
 #include "TopDownRPG/Interraction/EnemyInterface.h"
+#include "TopDownRPG/UI/WidgetController/OverlayWidgetController.h"
 #include "RPGEnemy.generated.h"
 
+class UWidgetComponent;
 /**
  * 
  */
@@ -26,10 +28,18 @@ public:
 	virtual int32 GetPlayerLevel() override;
 	//End Combat Interface
 
+	UPROPERTY(BlueprintAssignable)
+	FOnAttributeChangedSignature	OnHealthChanged;
+	UPROPERTY(BlueprintAssignable)
+	FOnAttributeChangedSignature	OnMaxHealthChanged;
+
 protected:
 	virtual void BeginPlay() override;
 	virtual void InitAbilityActorInfo() override;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Character class defaults")
 	int32	Level = 1;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TObjectPtr<UWidgetComponent>	HealthBar;
 };
