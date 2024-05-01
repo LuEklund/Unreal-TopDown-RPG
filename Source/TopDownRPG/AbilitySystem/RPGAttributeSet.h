@@ -145,6 +145,13 @@ public:
 	FGameplayAttributeData	Mana;
 	ATTRIBUTE_ACCESSORS(URPGAttributeSet, Mana);
 
+	/*
+	 * Meta Attributes
+	 */
+	UPROPERTY(BlueprintReadOnly, Category="Meta Attribute")
+	FGameplayAttributeData IncomingDamage;
+	ATTRIBUTE_ACCESSORS(URPGAttributeSet, IncomingDamage);
+
 
 
 	UFUNCTION()

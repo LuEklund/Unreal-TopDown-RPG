@@ -71,7 +71,7 @@ void FRPGGameplayTags::InitializeNativeGameplayTags()
 	GameplayTags.Input_Mouse_LMB = UGameplayTagsManager::Get().AddNativeGameplayTag(
 	FName("Input.Mouse.LMB"),
 	FString("Left Mouse Button")
-);
+	);
 
 	GameplayTags.Input_Mouse_RMB = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Input.Mouse.RMB"),
@@ -96,6 +96,13 @@ void FRPGGameplayTags::InitializeNativeGameplayTags()
 	GameplayTags.Input_Keyboard_4 = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Input.Keyboard.4"),
 		FString("Number Key 4")
+	);
+
+	
+	// Damage
+	GameplayTags.Damage = UGameplayTagsManager::Get().AddNativeGameplayTag(
+	FName("Damage"),
+	FString("Damage")
 	);
 }
 

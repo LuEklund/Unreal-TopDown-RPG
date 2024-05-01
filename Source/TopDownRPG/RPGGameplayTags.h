@@ -44,5 +44,6 @@ public:
  FGameplayTag Input_Keyboard_3;
  FGameplayTag Input_Keyboard_4;
 
+ FGameplayTag Damage;
 
 };
