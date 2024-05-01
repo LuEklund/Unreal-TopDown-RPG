@@ -8,6 +8,7 @@
 #include "GameFramework/Character.h"
 #include "Net/UnrealNetwork.h"
 #include "TopDownRPG/RPGGameplayTags.h"
+#include "TopDownRPG/Interraction/CombatInterface.h"
 
 
 URPGAttributeSet::URPGAttributeSet()
@@ -138,7 +139,15 @@ void URPGAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbac
 			const float NewHealth = GetHealth() - LocalIncomingDamage;
 			SetHealth(FMath::Clamp(NewHealth, 0.f, GetMaxHealth()));
 			const bool bFatal = NewHealth <= 0;
-			if (!bFatal)
+			if (bFatal)
+			{
+				ICombatInterface *CombatInterface = Cast<ICombatInterface>(Props.TargetAvatarActor);
+				if (CombatInterface)
+				{
+					CombatInterface->Die();
+				}
+			}
+			else
 			{
 				FGameplayTagContainer	TagContainer;
 				TagContainer.AddTag(FRPGGameplayTags::Get().Effects_HitReact);

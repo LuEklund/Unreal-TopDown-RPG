@@ -46,11 +46,17 @@ int32 ARPGEnemy::GetPlayerLevel()
 	return Level;
 }
 
+void ARPGEnemy::Die()
+{
+	SetLifeSpan(LifeSpan);
+	Super::Die();
+}
+
 
 void ARPGEnemy::BeginPlay()
 {
 	Super::BeginPlay();
-	GetCharacterMovement()->MaxWalkSpeed = BaseWalkSPeed;
+	GetCharacterMovement()->MaxWalkSpeed = BaseWalkSpeed;
 
 	InitAbilityActorInfo();
 	URPGAbilitySystemLibrary::GiveStartupAbilities(this, AbilitySystemComponent);
@@ -88,7 +94,7 @@ void ARPGEnemy::BeginPlay()
 void ARPGEnemy::HitReactTagChanged(const FGameplayTag CallbackTag, int32 NewCount)
 {
 	bHitReacting = NewCount > 0;
-	GetCharacterMovement()->MaxWalkSpeed = bHitReacting ? 0.f : BaseWalkSPeed;
+	GetCharacterMovement()->MaxWalkSpeed = bHitReacting ? 0.f : BaseWalkSpeed;
 }
 
 
