@@ -15,6 +15,7 @@
 
 ARPGCharacter::ARPGCharacter()
 {
+	bReplicates = true;
 	SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>("Spring Arm");
 	SpringArmComponent->SetupAttachment(RootComponent);
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>("Camera");
@@ -31,21 +32,23 @@ ARPGCharacter::ARPGCharacter()
 
 void ARPGCharacter::PossessedBy(AController* NewController)
 {
+
 	Super::PossessedBy(NewController);
-	
+
 	// Init ability actor info for the: SERVER
 	//Attributes
 	InitAbilityActorInfo();
 	//Abilities
 	AddCharacterAbilities();
+
 }
 
 void ARPGCharacter::OnRep_PlayerState()
 {
 	Super::OnRep_PlayerState();
-	
 	// Init ability actor info for the: CLIENT
 	InitAbilityActorInfo();
+
 }
 
 int32 ARPGCharacter::GetPlayerLevel()
@@ -71,5 +74,6 @@ void ARPGCharacter::InitAbilityActorInfo()
 			RPGHUD->InitOverlay(RPGPlayerController, RPGPlayerState, AbilitySystemComponent, AttributeSet);
 		}
 	}
+
 	InitializeDefaultAttributes();
 }

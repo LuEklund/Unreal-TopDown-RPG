@@ -8,4 +8,5 @@
 FGameplayEffectContext* URPGAbilitySystemGlobals::AllocGameplayEffectContext() const
 {
 	return new FRPGGameplayEffectContext();
+
 }
