@@ -4,6 +4,7 @@
 #include "ExecCalc_Damage.h"
 
 #include "AbilitySystemComponent.h"
+#include "TopDownRPG/RPGAbilityTypes.h"
 #include "TopDownRPG/RPGGameplayTags.h"
 #include "TopDownRPG/AbilitySystem/RPGAbilitySystemLibrary.h"
 #include "TopDownRPG/AbilitySystem/Data/CharacterClassInfo.h"
@@ -53,6 +54,8 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	{
 		Damage = Damage / 2.f;
 	}
+	FGameplayEffectContextHandle EffectContextHandle = Spec.GetContext();
+	URPGAbilitySystemLibrary::SetIsBlockedHit(EffectContextHandle,bBlock);
 
 	//Get Target Armor
 	float TargetArmor = 0.f;
@@ -100,6 +103,8 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 
 	//double the damage plus bonus if critical hit
 	Damage = bCriticalHit ? 2.f * Damage + SourceCriticalHitDamage : Damage;
+	URPGAbilitySystemLibrary::SetIsCriticalHit(EffectContextHandle, bCriticalHit);
+
 	
 	const FGameplayModifierEvaluatedData EvaluatedData(URPGAttributeSet::GetIncomingDamageAttribute(), EGameplayModOp::Additive, Damage);
 	OutExecutionOutput.AddOutputModifier(EvaluatedData);
