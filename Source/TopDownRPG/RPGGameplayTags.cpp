@@ -104,12 +104,18 @@ void FRPGGameplayTags::InitializeNativeGameplayTags()
 	FName("Damage"),
 	FString("Damage")
 	);
-
-	// Damage
+	GameplayTags.Damage_Fire = UGameplayTagsManager::Get().AddNativeGameplayTag(
+	FName("Damage.Fire"),
+	FString("Fire Damage type")
+	);
+	GameplayTags.DamageTypes.Add(GameplayTags.Damage_Fire);
+	
+	// Effects
 	GameplayTags.Effects_HitReact = UGameplayTagsManager::Get().AddNativeGameplayTag(
 	FName("Effects.HitReact"),
 	FString("Tag Granted when hit Reacting")
 	);
+	
 }
 
 FRPGGameplayTags::~FRPGGameplayTags()
