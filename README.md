@@ -1,6 +1,6 @@
 # Unreal-TopDown-RPG
-![](https://github.com/LuEklund/Unreal-TopDown-RPG/blob/master/TopDownRPG2.gif)
-![](https://github.com/LuEklund/Unreal-TopDown-RPG/blob/master/RPG.png)
+![](https://github.com/LuEklund/Unreal-TopDown-RPG/blob/master/ProgressImages/TopDownRPG3.gif)
+![](https://github.com/LuEklund/Unreal-TopDown-RPG/blob/master/ProgressImages/RPG.png)
 
 
 
