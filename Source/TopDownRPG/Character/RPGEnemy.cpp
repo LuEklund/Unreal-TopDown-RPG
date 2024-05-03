@@ -3,6 +3,8 @@
 
 #include "RPGEnemy.h"
 
+#include "BehaviorTree/BehaviorTree.h"
+#include "BehaviorTree/BlackboardComponent.h"
 #include "Components/WidgetComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "TopDownRPG/RPGGameplayTags.h"
@@ -10,6 +12,7 @@
 #include "TopDownRPG/AbilitySystem/RPGAbilitySystemComponent.h"
 #include "TopDownRPG/AbilitySystem/RPGAbilitySystemLibrary.h"
 #include "TopDownRPG/AbilitySystem/RPGAttributeSet.h"
+#include "TopDownRPG/AI/RPGAIController.h"
 #include "TopDownRPG/UI/Widget/RPGUserWidget.h"
 
 ARPGEnemy::ARPGEnemy()
@@ -19,11 +22,28 @@ ARPGEnemy::ARPGEnemy()
 	AbilitySystemComponent = CreateDefaultSubobject<URPGAbilitySystemComponent>("AbilitySystemComponent");
 	AbilitySystemComponent->SetIsReplicated(true);
 	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Minimal);
+
+	bUseControllerRotationPitch = false;
+	bUseControllerRotationRoll = false;
+	bUseControllerRotationYaw = false;
+	GetCharacterMovement()->bUseControllerDesiredRotation = true;
 	
 	AttributeSet = CreateDefaultSubobject<URPGAttributeSet>("AttributeSet");
 
 	HealthBar = CreateDefaultSubobject<UWidgetComponent>("HealthBar");
 	HealthBar->SetupAttachment(RootComponent);
+}
+
+void ARPGEnemy::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+	if (!HasAuthority()) return ;
+	RPGAIController = Cast<ARPGAIController>(NewController);
+	//Setup behaviour tree
+	RPGAIController->GetBlackboardComponent()->InitializeBlackboard(*BehaviorTree->BlackboardAsset);
+	RPGAIController->RunBehaviorTree(BehaviorTree);
+	RPGAIController->GetBlackboardComponent()->SetValueAsBool(FName("HitReacting"), false);
+	RPGAIController->GetBlackboardComponent()->SetValueAsBool(FName("RangedAttacker"), CharacterClass != ECharacterClass::Warrior);
 }
 
 void ARPGEnemy::HighLightActor()
@@ -98,6 +118,7 @@ void ARPGEnemy::HitReactTagChanged(const FGameplayTag CallbackTag, int32 NewCoun
 {
 	bHitReacting = NewCount > 0;
 	GetCharacterMovement()->MaxWalkSpeed = bHitReacting ? 0.f : BaseWalkSpeed;
+	RPGAIController->GetBlackboardComponent()->SetValueAsBool(FName("HitReacting"), bHitReacting);
 }
 
 

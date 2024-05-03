@@ -10,6 +10,8 @@
 #include "RPGEnemy.generated.h"
 
 class UWidgetComponent;
+class UBehaviorTree;
+class ARPGAIController;
 /**
  * 
  */
@@ -19,6 +21,7 @@ class TOPDOWNRPG_API ARPGEnemy : public ARPGCharacterBase, public IEnemyInterfac
 	GENERATED_BODY()
 public:
 	ARPGEnemy();
+	virtual void PossessedBy(AController* NewController) override;
 
 	//Enemy Interface
 	virtual void HighLightActor() override;
@@ -58,6 +61,12 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TObjectPtr<UWidgetComponent>	HealthBar;
+
+	UPROPERTY(EditAnywhere, Category="AI")
+	TObjectPtr<UBehaviorTree>	BehaviorTree;
+	
+	UPROPERTY()
+	TObjectPtr<ARPGAIController>	RPGAIController;
 
 
 };

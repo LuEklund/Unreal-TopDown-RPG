@@ -15,7 +15,6 @@
 
 ARPGCharacter::ARPGCharacter()
 {
-	bReplicates = true;
 	SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>("Spring Arm");
 	SpringArmComponent->SetupAttachment(RootComponent);
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>("Camera");
