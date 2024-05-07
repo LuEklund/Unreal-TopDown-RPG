@@ -72,6 +72,16 @@ void ARPGEnemy::Die()
 	Super::Die();
 }
 
+void ARPGEnemy::SetCombatTarget_Implementation(AActor* InCombatTarget)
+{
+	CombatTarget = InCombatTarget;
+}
+
+AActor* ARPGEnemy::GetCombatTarget_Implementation() const
+{
+	return (CombatTarget);
+}
+
 
 void ARPGEnemy::BeginPlay()
 {
