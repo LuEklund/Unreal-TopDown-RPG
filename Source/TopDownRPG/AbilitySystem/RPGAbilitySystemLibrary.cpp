@@ -6,6 +6,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "TopDownRPG/RPGAbilityTypes.h"
 #include "TopDownRPG/Game/RPGGameModeBase.h"
+#include "TopDownRPG/Interraction/CombatInterface.h"
 #include "TopDownRPG/Player/RPGPlayerState.h"
 #include "TopDownRPG/UI/HUD/RPGHUD.h"
 #include "TopDownRPG/UI/WidgetController/RPGWidgetController.h"
@@ -69,19 +70,27 @@ void URPGAbilitySystemLibrary::InitializeDefaultAttributes(const UObject *WorldC
 	 }
 }
 
-void URPGAbilitySystemLibrary::GiveStartupAbilities(const UObject* WorldContextObject, UAbilitySystemComponent* ASC)
+void URPGAbilitySystemLibrary::GiveStartupAbilities(const UObject* WorldContextObject, UAbilitySystemComponent* ASC, ECharacterClass CharacterClass)
 {
 	ARPGGameModeBase *RPGGM = Cast<ARPGGameModeBase>(UGameplayStatics::GetGameMode(WorldContextObject));
-	if (!RPGGM)
-	{
-		return ;
-	}
-	
+	if (!RPGGM) return ;
+
 	UCharacterClassInfo *CharacterClassInfo = RPGGM->CharacterClassInfo;
+	if (CharacterClassInfo == nullptr) return ;
+
 	for (TSubclassOf<UGameplayAbility> AbilityClass  : CharacterClassInfo->CommonAbilities)
 	{
 		FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(AbilityClass, 1);
 		ASC->GiveAbility(AbilitySpec);
+	}
+	const FCharacterDefaultInfo &DefaultInfo = CharacterClassInfo->GetClassDefaultInfo(CharacterClass);
+	for (TSubclassOf<UGameplayAbility> AbilityClass : DefaultInfo.StartupAbilities)
+	{
+		if (ICombatInterface *CombatInterface = Cast<ICombatInterface>(ASC->GetAvatarActor()))
+		{
+			FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(AbilityClass, CombatInterface->GetPlayerLevel());
+			ASC->GiveAbility(AbilitySpec);
+		}
 	}
 }
 

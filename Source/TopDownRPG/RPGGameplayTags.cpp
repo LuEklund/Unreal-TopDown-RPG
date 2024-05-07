@@ -150,6 +150,12 @@ void FRPGGameplayTags::InitializeNativeGameplayTags()
 	FName("Effects.HitReact"),
 	FString("Tag Granted when hit Reacting")
 	);
+
+	// Abilities
+	GameplayTags.Effects_HitReact = UGameplayTagsManager::Get().AddNativeGameplayTag(
+	FName("Abilities.Attack"),
+	FString("Attack Ability tag")
+	);
 	
 }
 
