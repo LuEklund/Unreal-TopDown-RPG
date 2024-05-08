@@ -154,6 +154,7 @@ void URPGAbilitySystemLibrary::GetLivePlayersWithinRadius(const UObject* WorldCo
 	if (const UWorld *World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull))
 	{
 		World->OverlapMultiByObjectType(Overlaps, SphereOrigin, FQuat::Identity, FCollisionObjectQueryParams(FCollisionObjectQueryParams::InitType::AllDynamicObjects), FCollisionShape::MakeSphere(Radius), SphereParams);
+		DrawDebugSphere(World, SphereOrigin, Radius, 16, FColor::Red, false, 4.f);
 		for (FOverlapResult &Overlap : Overlaps)
 		{
 			if (Overlap.GetActor()->Implements<UCombatInterface>() && !ICombatInterface::Execute_IsDead(Overlap.GetActor()))
@@ -162,4 +163,12 @@ void URPGAbilitySystemLibrary::GetLivePlayersWithinRadius(const UObject* WorldCo
 			}
 		}
 	}
+}
+
+bool URPGAbilitySystemLibrary::IsNotFriend(AActor* FirstActor, AActor* SecondActor)
+{
+	const bool bBothArePlayers = FirstActor->ActorHasTag(FName("Player")) && SecondActor->ActorHasTag(FName("Player"));
+	const bool bBothAreEnemies = FirstActor->ActorHasTag(FName("Enemy")) && SecondActor->ActorHasTag(FName("Enemy"));
+	const bool bFriends = bBothArePlayers || bBothAreEnemies;
+	return !bFriends;
 }
