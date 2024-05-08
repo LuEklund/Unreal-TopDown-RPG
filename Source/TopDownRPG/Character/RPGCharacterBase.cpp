@@ -45,6 +45,11 @@ AActor* ARPGCharacterBase::GetAvatar_Implementation()
 	return this;
 }
 
+TArray<FTaggedMontage> ARPGCharacterBase::GetAttackMontages_Implementation()
+{
+	return AttackMontages;
+}
+
 UAbilitySystemComponent* ARPGCharacterBase::GetAbilitySystemComponent() const
 {
 	return AbilitySystemComponent;
