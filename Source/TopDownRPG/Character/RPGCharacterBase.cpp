@@ -29,10 +29,20 @@ void ARPGCharacterBase::BeginPlay()
 	
 }
 
-FVector ARPGCharacterBase::GetCombatSocketLocation()
+FVector ARPGCharacterBase::GetCombatSocketLocation_Implementation()
 {
 	check(Weapon);
 	return Weapon->GetSocketLocation(WeaponTipSocketName);
+}
+
+bool ARPGCharacterBase::IsDead_Implementation() const
+{
+	return (bDead);
+}
+
+AActor* ARPGCharacterBase::GetAvatar_Implementation()
+{
+	return this;
 }
 
 UAbilitySystemComponent* ARPGCharacterBase::GetAbilitySystemComponent() const
@@ -64,6 +74,7 @@ void ARPGCharacterBase::MulticastHandleDeath_Implementation()
 	
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	Dissolve();
+	bDead = true;
 }
 
 void ARPGCharacterBase::InitAbilityActorInfo()
