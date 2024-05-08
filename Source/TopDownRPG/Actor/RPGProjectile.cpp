@@ -11,6 +11,7 @@
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "TopDownRPG/TopDownRPG.h"
+#include "TopDownRPG/AbilitySystem/RPGAbilitySystemLibrary.h"
 
 ARPGProjectile::ARPGProjectile()
 {
@@ -35,7 +36,9 @@ ARPGProjectile::ARPGProjectile()
 void ARPGProjectile::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (!DamageEffectSpecHandle.Data.IsValid() || DamageEffectSpecHandle.Data.Get()->GetContext().GetEffectCauser() == OtherActor)
+	if (!DamageEffectSpecHandle.Data.IsValid()
+		|| DamageEffectSpecHandle.Data.Get()->GetContext().GetEffectCauser() == OtherActor
+		|| !URPGAbilitySystemLibrary::IsNotFriend(DamageEffectSpecHandle.Data.Get()->GetContext().GetEffectCauser(), OtherActor))
 	{
 		return ;
 	}

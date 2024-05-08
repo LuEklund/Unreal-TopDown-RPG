@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "RPGGameplayAbility.h"
+#include "TopDownRPG/Interraction/CombatInterface.h"
 #include "RPGDamageGameplayAbility.generated.h"
 
 /**
@@ -24,5 +25,8 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category="Damage")
 	TMap<FGameplayTag, FScalableFloat> DamageTypes;
+
+	UFUNCTION(BlueprintPure)
+	FTaggedMontage GetRandomTaggedMontageFromArray(const TArray<FTaggedMontage> &TaggedMontages) const;
 	
 };
