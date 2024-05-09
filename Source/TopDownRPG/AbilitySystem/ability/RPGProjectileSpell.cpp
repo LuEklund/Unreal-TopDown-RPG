@@ -23,7 +23,7 @@ void URPGProjectileSpell::SpawnProjectile(const FVector &ProjectileTargetLocatio
 	const bool bIsServer = GetAvatarActorFromActorInfo()->HasAuthority();
 	if (bIsServer == false)	return;
 
-	const FVector SocketLocation = ICombatInterface::Execute_GetCombatSocketLocation(GetAvatarActorFromActorInfo(), FRPGGameplayTags::Get().Montage_Attack_Weapon);
+	const FVector SocketLocation = ICombatInterface::Execute_GetCombatSocketLocation(GetAvatarActorFromActorInfo(), FRPGGameplayTags::Get().CombatSocket_Weapon);
 	FRotator	Rotation = (ProjectileTargetLocation - SocketLocation).Rotation();
 	// Rotation.Pitch = 0.f;
 	
