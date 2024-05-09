@@ -18,8 +18,7 @@ class TOPDOWNRPG_API ARPGProjectile : public AActor
 
 private:
 	
-	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<USphereComponent>	SphereComponent;
+	
 
 	UPROPERTY(EditDefaultsOnly)
 	float LifeSpan = 15.f;
@@ -34,6 +33,9 @@ private:
 	TObjectPtr<UAudioComponent>	LoopingSoundComponent;
 	
 protected:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TObjectPtr<USphereComponent>	SphereComponent;
+	
 	UFUNCTION()
 	void	OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult &SweepResult);
 	virtual void BeginPlay() override;

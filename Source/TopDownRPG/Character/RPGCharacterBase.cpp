@@ -85,6 +85,16 @@ FTaggedMontage ARPGCharacterBase::GetTaggedMontageByTag_Implementation(const FGa
 	return FTaggedMontage();
 }
 
+int32 ARPGCharacterBase::GetMinionCount_Implementation()
+{
+	return MinionCount;
+}
+
+void ARPGCharacterBase::IncrementMinionCount_Implementation(int32 Amount)
+{
+	MinionCount += Amount;
+}
+
 UAbilitySystemComponent* ARPGCharacterBase::GetAbilitySystemComponent() const
 {
 	return AbilitySystemComponent;

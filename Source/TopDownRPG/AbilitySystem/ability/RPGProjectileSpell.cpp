@@ -18,14 +18,17 @@ void URPGProjectileSpell::ActivateAbility(const FGameplayAbilitySpecHandle Handl
 
 }
 
-void URPGProjectileSpell::SpawnProjectile(const FVector &ProjectileTargetLocation, const FGameplayTag &SocketTag)
+void URPGProjectileSpell::SpawnProjectile(const FVector &ProjectileTargetLocation, const FGameplayTag &SocketTag, bool bOverridePitch, float PitchOverride)
 {
 	const bool bIsServer = GetAvatarActorFromActorInfo()->HasAuthority();
 	if (bIsServer == false)	return;
 
 	const FVector SocketLocation = ICombatInterface::Execute_GetCombatSocketLocation(GetAvatarActorFromActorInfo(), SocketTag);
 	FRotator	Rotation = (ProjectileTargetLocation - SocketLocation).Rotation();
-	// Rotation.Pitch = 0.f;
+	if (bOverridePitch)
+	{
+		Rotation.Pitch = PitchOverride;
+	}
 	
 	
 	FTransform SpawnTransform;
