@@ -50,6 +50,7 @@ void ARPGProjectile::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, A
 		{
 			LoopingSoundComponent->Stop();
 		}
+		bHit = true;
 	}
 	if (HasAuthority())
 	{
@@ -84,6 +85,7 @@ void ARPGProjectile::Destroyed()
 		{
 			LoopingSoundComponent->Stop();
 		}
+		bHit = true;
 	}
 	Super::Destroyed();
 }
