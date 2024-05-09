@@ -63,6 +63,11 @@ TArray<FTaggedMontage> ARPGCharacterBase::GetAttackMontages_Implementation()
 	return AttackMontages;
 }
 
+UNiagaraSystem* ARPGCharacterBase::GetBloodEffect_Implementation()
+{
+	return (BloodEffect);
+}
+
 UAbilitySystemComponent* ARPGCharacterBase::GetAbilitySystemComponent() const
 {
 	return AbilitySystemComponent;

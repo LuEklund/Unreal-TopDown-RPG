@@ -8,6 +8,7 @@
 #include "TopDownRPG/Interraction/CombatInterface.h"
 #include "RPGCharacterBase.generated.h"
 
+class UNiagaraSystem;
 class UGameplayAbility;
 class UGameplayEffect;
 class UAttributeSet;
@@ -73,6 +74,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TObjectPtr<UMaterialInstance>	WeaponDissolveMaterialInstance;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Combat")
+	TObjectPtr<UNiagaraSystem> BloodEffect;
 public:
 	ARPGCharacterBase();
 
@@ -86,6 +90,7 @@ public:
 	virtual bool IsDead_Implementation() const override;
 	virtual AActor *GetAvatar_Implementation() override;
 	virtual TArray<FTaggedMontage>	GetAttackMontages_Implementation() override;
+	virtual	UNiagaraSystem *GetBloodEffect_Implementation() override;
 	// END Combat Interface
 	
 	UFUNCTION(NetMulticast, Reliable)
