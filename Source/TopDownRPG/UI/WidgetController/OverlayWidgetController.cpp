@@ -5,6 +5,7 @@
 
 #include "TopDownRPG/AbilitySystem/RPGAbilitySystemComponent.h"
 #include "TopDownRPG/AbilitySystem/RPGAttributeSet.h"
+#include "TopDownRPG/AbilitySystem/Data/AbilityInfo.h"
 
 void UOverlayWidgetController::BroadcastInitialValues()
 {
@@ -53,7 +54,18 @@ void UOverlayWidgetController::BindCallbacksToDependencies()
 			}
 		);
 
-	Cast<URPGAbilitySystemComponent>(AbilitySystemComponent)->EffectAssetTags.AddLambda(
+	URPGAbilitySystemComponent *RPGASC = Cast<URPGAbilitySystemComponent>(AbilitySystemComponent);
+
+	if (RPGASC->bStartupAbilitiesGive)
+	{
+		OnIntializeStartupAbilities(RPGASC);
+	}
+	else
+	{
+		RPGASC->AbilitiesGivenDelegate.AddUObject(this, &UOverlayWidgetController::OnIntializeStartupAbilities);
+	}
+
+	RPGASC->EffectAssetTags.AddLambda(
 		[this](const FGameplayTagContainer &AssetTags)
 		{
 			for (const FGameplayTag &Tag : AssetTags)
@@ -70,5 +82,22 @@ void UOverlayWidgetController::BindCallbacksToDependencies()
 			}
 		}
 	);
+}
+
+void UOverlayWidgetController::OnIntializeStartupAbilities(URPGAbilitySystemComponent *RPGAbilitySystemComponent)
+{
+	//TODO: Get information about all given abilities, look up their ability info, and broadcast it to widgets.
+	if (!RPGAbilitySystemComponent->bStartupAbilitiesGive) return;
+	FForEachAbility	BroadcastDelegate;
+	BroadcastDelegate.BindLambda(
+		[this](const FGameplayAbilitySpec &AbilitySpec)
+		{
+			//TODO: NEED a way to figure out the ability tag for a given spec.
+			FRPGAbilityInfo Info = AbilityInfo->FindAbilityInfoForTag(URPGAbilitySystemComponent::GetAbilityTagFromSpec(AbilitySpec));
+			Info.InputTag = URPGAbilitySystemComponent::GetInputTagFromSpec(AbilitySpec);
+			AbilityInfoDelegate.Broadcast(Info);
+		});
+	RPGAbilitySystemComponent->ForEachAbility(BroadcastDelegate);
+	
 }
 
