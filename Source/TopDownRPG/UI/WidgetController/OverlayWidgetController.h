@@ -6,6 +6,7 @@
 #include "RPGWidgetController.h"
 #include "OverlayWidgetController.generated.h"
 
+class UAbilityInfo;
 class URPGUserWidget;
 
 USTRUCT(BlueprintType)
@@ -56,8 +57,11 @@ public:
 
 protected:
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="WidgetData")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Widget Data")
 	TObjectPtr<UDataTable>	MessageWidgetDataTable;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Widget Data")
+	TObjectPtr<UAbilityInfo>	AbilityInfo;
 	
 	template<typename T>
 	T* GetDataTableRowByTag(UDataTable *DataTable, const FGameplayTag &Tag);

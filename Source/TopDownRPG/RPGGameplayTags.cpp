@@ -165,7 +165,11 @@ void FRPGGameplayTags::InitializeNativeGameplayTags()
 	FName("Abilities.Summon"),
 	FString("Summon Ability tag")
 	);
-
+	GameplayTags.Abilities_Fire_FireBolt = UGameplayTagsManager::Get().AddNativeGameplayTag(
+	FName("Abilities.Fire.FireBolt"),
+	FString("FireBolt Ability tag")
+	);
+	
 	
 	// Combat Sockets
 	GameplayTags.CombatSocket_Weapon = UGameplayTagsManager::Get().AddNativeGameplayTag(
