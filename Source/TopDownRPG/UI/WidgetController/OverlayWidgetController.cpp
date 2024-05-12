@@ -6,6 +6,8 @@
 #include "TopDownRPG/AbilitySystem/RPGAbilitySystemComponent.h"
 #include "TopDownRPG/AbilitySystem/RPGAttributeSet.h"
 #include "TopDownRPG/AbilitySystem/Data/AbilityInfo.h"
+#include "TopDownRPG/AbilitySystem/Data/LevelUpInfo.h"
+#include "TopDownRPG/Player/RPGPlayerState.h"
 
 void UOverlayWidgetController::BroadcastInitialValues()
 {
@@ -20,6 +22,9 @@ void UOverlayWidgetController::BroadcastInitialValues()
 
 void UOverlayWidgetController::BindCallbacksToDependencies()
 {
+	ARPGPlayerState *RPGPlayerState = CastChecked<ARPGPlayerState>(PlayerState);
+	RPGPlayerState->OnXPChangedDelegate.AddUObject(this, &UOverlayWidgetController::OnXPChanged);
+
 	const URPGAttributeSet *RPGAttributeSet = CastChecked<URPGAttributeSet>(AttributeSet);
 
 	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(
@@ -99,5 +104,27 @@ void UOverlayWidgetController::OnIntializeStartupAbilities(URPGAbilitySystemComp
 		});
 	RPGAbilitySystemComponent->ForEachAbility(BroadcastDelegate);
 	
+}
+
+void UOverlayWidgetController::OnXPChanged(int32 NewXP) const
+{
+	const ARPGPlayerState *RPGPlayerState = CastChecked<ARPGPlayerState>(PlayerState);
+	const ULevelUpInfo	*LevelUpInfo = RPGPlayerState->LevelUpInfo;
+	checkf(LevelUpInfo, TEXT("%s: Unable to find LevelUpInfo. Please fill out RPGPlayerState Blueprint"), *__FUNCTION__);
+
+	const int32 Level = LevelUpInfo->FindLevelForXP(NewXP);
+	const int32 MaxLevel = LevelUpInfo->LevelUpInformation.Num();
+
+	if (Level <= MaxLevel && Level > 0)
+	{
+		const int32 LevelUpRequirement = LevelUpInfo->LevelUpInformation[Level].LevelUpRequirement;
+		const int32	PreviousLevelUpRequirement = LevelUpInfo->LevelUpInformation[Level - 1].LevelUpRequirement;
+		
+		const int32 DeltaLevelRequirement = LevelUpRequirement - PreviousLevelUpRequirement;
+		const int32 XPForThisLevel = NewXP - PreviousLevelUpRequirement;
+
+		const float XPBarPercent = static_cast<float>(XPForThisLevel) / static_cast<float>(DeltaLevelRequirement);
+		OnXPPercentChangeDelegate.Broadcast(XPBarPercent);
+	}
 }
 
