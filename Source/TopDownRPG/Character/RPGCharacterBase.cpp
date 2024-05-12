@@ -95,6 +95,11 @@ void ARPGCharacterBase::IncrementMinionCount_Implementation(int32 Amount)
 	MinionCount += Amount;
 }
 
+ECharacterClass ARPGCharacterBase::GetCharacterClass_Implementation()
+{
+	return CharacterClass;
+}
+
 UAbilitySystemComponent* ARPGCharacterBase::GetAbilitySystemComponent() const
 {
 	return AbilitySystemComponent;
