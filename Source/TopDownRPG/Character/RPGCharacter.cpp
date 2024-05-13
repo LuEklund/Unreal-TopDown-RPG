@@ -52,7 +52,19 @@ void ARPGCharacter::OnRep_PlayerState()
 
 }
 
-int32 ARPGCharacter::GetPlayerLevel()
+void ARPGCharacter::AddToXP_Implementation(int32 InXP)
+{
+	ARPGPlayerState *RPGPlayerState = GetPlayerState<ARPGPlayerState>();
+	check(RPGPlayerState);
+	RPGPlayerState->AddToXP(InXP);
+}
+
+void ARPGCharacter::LevelUp_Implementation()
+{
+	IPlayerInterface::LevelUp_Implementation();
+}
+
+int32 ARPGCharacter::GetPlayerLevel_Implementation()
 {
 	const ARPGPlayerState *RPGPlayerState = GetPlayerState<ARPGPlayerState>();
 	check(RPGPlayerState);
