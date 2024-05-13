@@ -162,6 +162,7 @@ void ARPGCharacterBase::AddCharacterAbilities()
 	if (!HasAuthority()) return;
 	URPGAbilitySystemComponent *RPGASC = CastChecked<URPGAbilitySystemComponent>(AbilitySystemComponent);
 	RPGASC->AddCharacterAbilities(StartupAbilities);
+	RPGASC->AddCharacterPassiveAbilities(StartupPassiveAbilities);
 	
 }
 

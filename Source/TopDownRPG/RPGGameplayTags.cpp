@@ -142,6 +142,14 @@ void FRPGGameplayTags::InitializeNativeGameplayTags()
 	);
 
 	
+	// Meta Attributes
+	GameplayTags.Attribute_Meta_IncomingXP = UGameplayTagsManager::Get().AddNativeGameplayTag(
+	FName("Attributes.Meta.IncomingXP"),
+	FString("IncomingXP XP Meta Attribute")
+	);
+
+
+	
 	// Map of Damage types to resistances
 	GameplayTags.DamageTypesToResistances.Add(GameplayTags.Damage_Fire, GameplayTags.Attribute_Resistance_Fire);
 	GameplayTags.DamageTypesToResistances.Add(GameplayTags.Damage_Arcane, GameplayTags.Attribute_Resistance_Arcane);

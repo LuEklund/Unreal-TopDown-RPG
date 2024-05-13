@@ -10,6 +10,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
 #include "TopDownRPG/RPGGameplayTags.h"
+#include "TopDownRPG/RPGLogChannels.h"
 #include "TopDownRPG/Interraction/CombatInterface.h"
 #include "TopDownRPG/Player/RPGPlayerController.h"
 
@@ -140,7 +141,6 @@ void URPGAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbac
 	if (Data.EvaluatedData.Attribute == GetHealthAttribute())
 	{
 		SetHealth(FMath::Clamp(GetHealth(), 0.f, GetMaxHealth()));
-		UE_LOG(LogTemp, Warning, TEXT("Chanage Health on %s, Health: %f"), *Props.TargetAvatarActor->GetName(), GetHealth());
 	}
 	if (Data.EvaluatedData.Attribute == GetManaAttribute())
 	{
@@ -162,6 +162,7 @@ void URPGAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbac
 				{
 					CombatInterface->Die();
 				}
+				SendXPEvent(Props);
 			}
 			else
 			{
@@ -171,6 +172,11 @@ void URPGAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbac
 			}
 			ShowFloatingText(Props, LocalIncomingDamage);
 		}
+	}
+	if (Data.EvaluatedData.Attribute == GetIncomingXPAttribute())
+	{
+		const float LocalIncomingXP = GetIncomingXP();
+		SetIncomingXP(0.f);
 	}
 }
 
@@ -192,6 +198,21 @@ void URPGAttributeSet::ShowFloatingText(const FEffectProperties& Props, const fl
 	}
 }
 
+void URPGAttributeSet::SendXPEvent(const FEffectProperties& Props)
+{
+	if (ICombatInterface *CombatInterface = Cast<ICombatInterface>(Props.TargetCharacter))
+	{
+		const int32 TargetLevel = CombatInterface->GetPlayerLevel();
+		const ECharacterClass TargetCLass = ICombatInterface::Execute_GetCharacterClass(Props.TargetCharacter);
+		const int32 XPReward = URPGAbilitySystemLibrary::GetXPRewardForClassAndLevel(Props.TargetCharacter, TargetCLass, TargetLevel);
+
+		const FRPGGameplayTags &GameplayTags = FRPGGameplayTags::Get();
+		FGameplayEventData	PayLoad;
+		PayLoad.EventTag = GameplayTags.Attribute_Meta_IncomingXP;
+		PayLoad.EventMagnitude = XPReward;
+		UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(Props.SourceCharacter, GameplayTags.Attribute_Meta_IncomingXP, PayLoad);
+	}
+}
 
 void URPGAttributeSet::OnRep_Health(const FGameplayAttributeData& OldHealth) const
 {

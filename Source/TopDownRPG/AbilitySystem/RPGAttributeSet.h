@@ -166,6 +166,10 @@ public:
 	FGameplayAttributeData IncomingDamage;
 	ATTRIBUTE_ACCESSORS(URPGAttributeSet, IncomingDamage);
 
+	UPROPERTY(BlueprintReadOnly, Category="Meta Attribute")
+	FGameplayAttributeData IncomingXP;
+	ATTRIBUTE_ACCESSORS(URPGAttributeSet, IncomingXP);
+
 
 
 	UFUNCTION()
@@ -220,6 +224,7 @@ public:
 private:
 	void	SetEffectProperties(const FGameplayEffectModCallbackData& Data, FEffectProperties &Props) const;
 	void	ShowFloatingText(const FEffectProperties &Props, float Damage);
+	void	SendXPEvent(const FEffectProperties &Props);
 
 	
 };

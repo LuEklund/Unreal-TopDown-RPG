@@ -41,6 +41,8 @@ public:
  FGameplayTag Attribute_Resistance_Lightning;
  FGameplayTag Attribute_Resistance_Arcane;
  FGameplayTag Attribute_Resistance_Physical;
+ 
+ FGameplayTag Attribute_Meta_IncomingXP;
 
  FGameplayTag Input_Mouse_LMB;
  FGameplayTag Input_Mouse_RMB;
