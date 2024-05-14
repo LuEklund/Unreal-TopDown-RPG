@@ -7,6 +7,7 @@
 #include "TopDownRPG/Interraction/PlayerInterface.h"
 #include "RPGCharacter.generated.h"
 
+class UNiagaraComponent;
 class USpringArmComponent;
 class UCameraComponent;
 /**
@@ -37,14 +38,20 @@ public:
 	//Combat Interface
 	virtual int32 GetPlayerLevel_Implementation() override;
 	//End Combat Interface
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TObjectPtr<UNiagaraComponent>	LevelUpNiagaraComponent;
 	
 private:
-	UPROPERTY(EditAnywhere, Category="Camera")
+	UPROPERTY(VisibleAnywhere, Category="Camera")
 	TObjectPtr<USpringArmComponent>	SpringArmComponent;
 
-	UPROPERTY(EditAnywhere, Category="Camera")
+	UPROPERTY(VisibleAnywhere, Category="Camera")
 	TObjectPtr<UCameraComponent>	CameraComponent;
 
 	virtual void	InitAbilityActorInfo() override;
+
+	UFUNCTION(NetMulticast, Reliable)
+	void	MulticastLevelUpParticles();
 
 };

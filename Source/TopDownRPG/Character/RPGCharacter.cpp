@@ -4,6 +4,7 @@
 #include "RPGCharacter.h"
 
 #include "AbilitySystemComponent.h"
+#include "NiagaraComponent.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -17,9 +18,18 @@
 ARPGCharacter::ARPGCharacter()
 {
 	SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>("Spring Arm");
-	SpringArmComponent->SetupAttachment(RootComponent);
+	SpringArmComponent->SetupAttachment(GetRootComponent());
+	// SpringArmComponent->SetUsingAbsoluteLocation(true);
+	SpringArmComponent->bDoCollisionTest = false;
+	
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>("Camera");
-	CameraComponent->SetupAttachment(SpringArmComponent);
+	CameraComponent->SetupAttachment(SpringArmComponent, USpringArmComponent::SocketName);
+	CameraComponent->bUsePawnControlRotation = false;
+	
+	LevelUpNiagaraComponent = CreateDefaultSubobject<UNiagaraComponent>("LevelUpNiagaraComponent");
+	LevelUpNiagaraComponent->SetupAttachment(GetRootComponent());
+	LevelUpNiagaraComponent->bAutoActivate = false;
+	
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->RotationRate = FRotator(0.f, 400.f, 0.f);
 	GetCharacterMovement()->bConstrainToPlane = true;
@@ -62,8 +72,22 @@ void ARPGCharacter::AddToXP_Implementation(int32 InXP)
 
 void ARPGCharacter::LevelUp_Implementation()
 {
-	IPlayerInterface::LevelUp_Implementation();
+	MulticastLevelUpParticles();
 }
+
+
+void ARPGCharacter::MulticastLevelUpParticles_Implementation()
+{
+	if (IsValid(LevelUpNiagaraComponent))
+	{
+		const FVector CameraLocation = CameraComponent->GetComponentLocation();
+		const FVector NiagaraSystemLocation = LevelUpNiagaraComponent->GetComponentLocation();
+		const FRotator ToCameraRotation = (CameraLocation - NiagaraSystemLocation).Rotation();
+		LevelUpNiagaraComponent->SetWorldRotation(ToCameraRotation);
+		LevelUpNiagaraComponent->Activate(true);
+	}
+}
+
 
 int32 ARPGCharacter::GetXP_Implementation() const
 {
