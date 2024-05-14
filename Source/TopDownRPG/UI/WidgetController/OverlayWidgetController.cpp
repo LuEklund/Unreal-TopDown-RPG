@@ -24,6 +24,11 @@ void UOverlayWidgetController::BindCallbacksToDependencies()
 {
 	ARPGPlayerState *RPGPlayerState = CastChecked<ARPGPlayerState>(PlayerState);
 	RPGPlayerState->OnXPChangedDelegate.AddUObject(this, &UOverlayWidgetController::OnXPChanged);
+	RPGPlayerState->OnLevelChangedDelegate.AddLambda(
+		[this](int32 NewLevel)
+		{
+				OnPlayerLevelChangedDelegate.Broadcast(NewLevel);
+		});
 
 	const URPGAttributeSet *RPGAttributeSet = CastChecked<URPGAttributeSet>(AttributeSet);
 

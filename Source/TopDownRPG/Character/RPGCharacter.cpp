@@ -8,6 +8,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "TopDownRPG/AbilitySystem/RPGAbilitySystemComponent.h"
+#include "TopDownRPG/AbilitySystem/Data/LevelUpInfo.h"
 #include "TopDownRPG/Player/RPGPlayerController.h"
 #include "TopDownRPG/Player/RPGPlayerState.h"
 #include "TopDownRPG/UI/HUD/RPGHUD.h"
@@ -62,6 +63,56 @@ void ARPGCharacter::AddToXP_Implementation(int32 InXP)
 void ARPGCharacter::LevelUp_Implementation()
 {
 	IPlayerInterface::LevelUp_Implementation();
+}
+
+int32 ARPGCharacter::GetXP_Implementation() const
+{
+	ARPGPlayerState *RPGPlayerState = GetPlayerState<ARPGPlayerState>();
+	check(RPGPlayerState);
+	return RPGPlayerState->GetXP();
+}
+
+int32 ARPGCharacter::FindLevelForXP_Implementation(int32 InXp) const
+{
+	ARPGPlayerState *RPGPlayerState = GetPlayerState<ARPGPlayerState>();
+	check(RPGPlayerState);
+	return RPGPlayerState->LevelUpInfo->FindLevelForXP(InXp);
+}
+
+int32 ARPGCharacter::GetAttributePointsReward_Implementation(int32 InLevel) const
+{
+	const ARPGPlayerState *RPGPlayerState = GetPlayerState<ARPGPlayerState>();
+	check(RPGPlayerState);
+	return RPGPlayerState->LevelUpInfo->LevelUpInformation[InLevel].AttributePointAward;
+}
+
+int32 ARPGCharacter::GetSpellPointsReward_Implementation(int32 InLevel) const
+{
+	const ARPGPlayerState *RPGPlayerState = GetPlayerState<ARPGPlayerState>();
+	check(RPGPlayerState);
+	return RPGPlayerState->LevelUpInfo->LevelUpInformation[InLevel].SpellPointsAward;
+}
+
+void ARPGCharacter::AddToPlayerLevel_Implementation(int32 InPlayerLevel)
+{
+	ARPGPlayerState *RPGPlayerState = GetPlayerState<ARPGPlayerState>();
+	check(RPGPlayerState);
+	return RPGPlayerState->AddToLevel(InPlayerLevel);
+}
+
+void ARPGCharacter::AddToSpellPoints_Implementation(int32 InSpellPoints)
+{
+	ARPGPlayerState *RPGPlayerState = GetPlayerState<ARPGPlayerState>();
+	check(RPGPlayerState);
+	//TODO add attribute points to player state
+}
+
+void ARPGCharacter::AddToAttributePoints_Implementation(int32 InAttributePoints)
+{
+	ARPGPlayerState *RPGPlayerState = GetPlayerState<ARPGPlayerState>();
+	check(RPGPlayerState);
+	//TODO add spell points to player state
+
 }
 
 int32 ARPGCharacter::GetPlayerLevel_Implementation()
