@@ -128,15 +128,14 @@ void ARPGCharacter::AddToSpellPoints_Implementation(int32 InSpellPoints)
 {
 	ARPGPlayerState *RPGPlayerState = GetPlayerState<ARPGPlayerState>();
 	check(RPGPlayerState);
-	//TODO add attribute points to player state
+	RPGPlayerState->AddToSpellPoints(InSpellPoints);
 }
 
 void ARPGCharacter::AddToAttributePoints_Implementation(int32 InAttributePoints)
 {
 	ARPGPlayerState *RPGPlayerState = GetPlayerState<ARPGPlayerState>();
 	check(RPGPlayerState);
-	//TODO add spell points to player state
-
+	RPGPlayerState->AddToAttributePoints(InAttributePoints);
 }
 
 int32 ARPGCharacter::GetPlayerLevel_Implementation()

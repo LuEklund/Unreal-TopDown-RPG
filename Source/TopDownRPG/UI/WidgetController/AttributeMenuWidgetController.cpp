@@ -43,5 +43,7 @@ void UAttributeMenuWidgetController::BroadcastInitialValues()
 	{
 		BroadcastAttributeInfo(Pair.Key, Pair.Value());
 	}
+	ARPGPlayerState *RPGPlayerState = CastChecked<ARPGPlayerState>(PlayerState);
+	AttributePointsChangedDelegate.Broadcast(RPGPlayerState->GetAttributePoints());
 
 }
