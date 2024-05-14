@@ -37,6 +37,9 @@ struct FWidgetControllerParams
 /**
  * 
  */
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPlayerStatChangedSignature, int32, NewValue);
+
 UCLASS()
 class TOPDOWNRPG_API URPGWidgetController : public UObject
 {
