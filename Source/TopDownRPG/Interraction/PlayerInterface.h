@@ -43,6 +43,12 @@ public:
 
 	UFUNCTION(BlueprintNativeEvent)
 	int32	GetSpellPointsReward(int32 InLevel) const;
+
+	UFUNCTION(BlueprintNativeEvent)
+	int32	GetAttributePoints() const;
+
+	UFUNCTION(BlueprintNativeEvent)
+	int32	GetSpellPoints() const;
 	
 	UFUNCTION(BlueprintNativeEvent)
 	int32 FindLevelForXP(int32 InXp) const;

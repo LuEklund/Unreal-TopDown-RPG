@@ -138,6 +138,21 @@ void ARPGCharacter::AddToAttributePoints_Implementation(int32 InAttributePoints)
 	RPGPlayerState->AddToAttributePoints(InAttributePoints);
 }
 
+int32 ARPGCharacter::GetAttributePoints_Implementation() const
+{
+	ARPGPlayerState *RPGPlayerState = GetPlayerState<ARPGPlayerState>();
+	check(RPGPlayerState);
+	return RPGPlayerState->GetAttributePoints();
+}
+
+int32 ARPGCharacter::GetSpellPoints_Implementation() const
+{
+	ARPGPlayerState *RPGPlayerState = GetPlayerState<ARPGPlayerState>();
+	check(RPGPlayerState);
+	return RPGPlayerState->GetSpellPoints();
+
+}
+
 int32 ARPGCharacter::GetPlayerLevel_Implementation()
 {
 	const ARPGPlayerState *RPGPlayerState = GetPlayerState<ARPGPlayerState>();

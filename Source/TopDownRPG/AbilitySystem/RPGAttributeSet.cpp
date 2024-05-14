@@ -195,8 +195,8 @@ void URPGAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbac
 				IPlayerInterface::Execute_AddToAttributePoints(Props.SourceCharacter, AttributePointsReward);
 				IPlayerInterface::Execute_AddToSpellPoints(Props.SourceCharacter, SpellPointsReward);
 
-				SetHealth(GetMaxHealth());
-				SetMana(GetMaxMana());
+				bTopOfHealth = true;
+				bTopOfMana = true;
 				
 				IPlayerInterface::Execute_LevelUp(Props.SourceCharacter);
 			}
@@ -204,6 +204,23 @@ void URPGAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbac
 			IPlayerInterface::Execute_AddToXP(Props.SourceCharacter, LocalIncomingXP);
 		}
 	}
+}
+
+void URPGAttributeSet::PostAttributeChange(const FGameplayAttribute& Attribute, float OldValue, float NewValue)
+{
+	Super::PostAttributeChange(Attribute, OldValue, NewValue);
+
+	if (Attribute == GetMaxHealthAttribute() && bTopOfHealth)
+	{
+		SetHealth(GetMaxHealth());
+		bTopOfHealth = false;
+	}
+	if (Attribute == GetMaxManaAttribute() && bTopOfMana)
+	{
+		SetMana(GetMaxMana());
+		bTopOfMana = false;
+	}
+
 }
 
 void URPGAttributeSet::ShowFloatingText(const FEffectProperties& Props, const float Damage)

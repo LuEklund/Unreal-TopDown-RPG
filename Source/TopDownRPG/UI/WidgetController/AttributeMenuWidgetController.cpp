@@ -3,6 +3,7 @@
 
 #include "AttributeMenuWidgetController.h"
 
+#include "TopDownRPG/AbilitySystem/RPGAbilitySystemComponent.h"
 #include "TopDownRPG/AbilitySystem/RPGAttributeSet.h"
 #include "TopDownRPG/AbilitySystem/Data/AttributeInfo.h"
 #include "TopDownRPG/Player/RPGPlayerState.h"
@@ -46,4 +47,10 @@ void UAttributeMenuWidgetController::BroadcastInitialValues()
 	ARPGPlayerState *RPGPlayerState = CastChecked<ARPGPlayerState>(PlayerState);
 	AttributePointsChangedDelegate.Broadcast(RPGPlayerState->GetAttributePoints());
 
+}
+
+void UAttributeMenuWidgetController::UpgardeAttribute(const FGameplayTag& AttributeTag)
+{
+	URPGAbilitySystemComponent *RPGASC = CastChecked<URPGAbilitySystemComponent>(AbilitySystemComponent);
+	RPGASC->UpgardeAttribute(AttributeTag);
 }
