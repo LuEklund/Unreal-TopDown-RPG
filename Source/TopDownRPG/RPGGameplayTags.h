@@ -50,6 +50,8 @@ public:
  FGameplayTag Input_Keyboard_2;
  FGameplayTag Input_Keyboard_3;
  FGameplayTag Input_Keyboard_4;
+ FGameplayTag Input_Passive_1;
+ FGameplayTag Input_Passive_2;
 
  FGameplayTag Damage;
  FGameplayTag Damage_Fire;

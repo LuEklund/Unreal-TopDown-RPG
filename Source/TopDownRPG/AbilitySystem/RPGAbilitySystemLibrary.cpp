@@ -8,38 +8,61 @@
 #include "TopDownRPG/Game/RPGGameModeBase.h"
 #include "TopDownRPG/Interraction/CombatInterface.h"
 #include "TopDownRPG/Player/RPGPlayerState.h"
-#include "TopDownRPG/UI/HUD/RPGHUD.h"
 #include "TopDownRPG/UI/WidgetController/RPGWidgetController.h"
+#include "TopDownRPG/UI/HUD/RPGHUD.h"
 
 
-UOverlayWidgetController* URPGAbilitySystemLibrary::GetOverlayWidgetController(const UObject* WorldContextObject)
+
+bool URPGAbilitySystemLibrary::MakeWidgetControllerParams(const UObject* WorldContextObject,
+	FWidgetControllerParams& OutWCParams, ARPGHUD *&OutRPGHUD)
 {
 	if (APlayerController *PC = UGameplayStatics::GetPlayerController(WorldContextObject, 0))
 	{
-		if (ARPGHUD *RPGHUD = Cast<ARPGHUD>(PC->GetHUD()))
+		OutRPGHUD = Cast<ARPGHUD>(PC->GetHUD());
+		if (OutRPGHUD)
 		{
 			ARPGPlayerState *PS = PC->GetPlayerState<ARPGPlayerState>();
 			UAbilitySystemComponent *ASC = PS->GetAbilitySystemComponent();
 			UAttributeSet *AS = PS->GetAttributeSet();
-			const FWidgetControllerParams	WidgetControllerParams(PC, PS, ASC, AS);
-			return (RPGHUD->GetOverlayWidgetController(WidgetControllerParams));
+			OutWCParams.AttributeSet = AS;
+			OutWCParams.AbilitySystemComponent = ASC;
+			OutWCParams.PlayerState = PS;
+			OutWCParams.PlayerController = PC;
+			return (true);
 		}
+	}
+	return false;
+}
+
+UOverlayWidgetController* URPGAbilitySystemLibrary::GetOverlayWidgetController(const UObject* WorldContextObject)
+{
+	FWidgetControllerParams WCParams;
+	ARPGHUD	*RPGHUD = nullptr;
+	if (MakeWidgetControllerParams(WorldContextObject, WCParams, RPGHUD))
+	{
+		return (RPGHUD->GetOverlayWidgetController(WCParams));
 	}
 	return (nullptr);
 }
 
 UAttributeMenuWidgetController* URPGAbilitySystemLibrary::GetAttributeMenuWidgetController(const UObject* WorldContextObject)
 {
-	if (APlayerController *PC = UGameplayStatics::GetPlayerController(WorldContextObject, 0))
+	FWidgetControllerParams WCParams;
+	ARPGHUD	*RPGHUD = nullptr;
+	if (MakeWidgetControllerParams(WorldContextObject, WCParams, RPGHUD))
 	{
-		if (ARPGHUD *RPGHUD = Cast<ARPGHUD>(PC->GetHUD()))
-		{
-			ARPGPlayerState *PS = PC->GetPlayerState<ARPGPlayerState>();
-			UAbilitySystemComponent *ASC = PS->GetAbilitySystemComponent();
-			UAttributeSet *AS = PS->GetAttributeSet();
-			const FWidgetControllerParams	WidgetControllerParams(PC, PS, ASC, AS);
-			return (RPGHUD->GetAttributeMenuWidgetController(WidgetControllerParams));
-		}
+		return (RPGHUD->GetAttributeMenuWidgetController(WCParams));
+	}
+	return (nullptr);
+}
+
+USpellMenuWidgetController* URPGAbilitySystemLibrary::GetSpellMenuWidgetController(const UObject* WorldContextObject)
+{
+	FWidgetControllerParams WCParams;
+	ARPGHUD	*RPGHUD = nullptr;
+	if (MakeWidgetControllerParams(WorldContextObject, WCParams, RPGHUD))
+	{
+		return (RPGHUD->GetSpellMenuWidgetController(WCParams));
 	}
 	return (nullptr);
 }

@@ -6,7 +6,7 @@
 #include "TopDownRPG/UI/Widget/RPGUserWidget.h"
 #include "TopDownRPG/UI/WidgetController/AttributeMenuWidgetController.h"
 #include "TopDownRPG/UI/WidgetController/OverlayWidgetController.h"
-
+#include "TopDownRPG/UI/WidgetController/SpellMenuWidgetController.h"
 
 
 UOverlayWidgetController* ARPGHUD::GetOverlayWidgetController(const FWidgetControllerParams& Params)
@@ -29,6 +29,17 @@ UAttributeMenuWidgetController* ARPGHUD::GetAttributeMenuWidgetController(const 
 		AttributeMenuWidgetController->BindCallbacksToDependencies();
 	}
 	return AttributeMenuWidgetController;
+}
+
+USpellMenuWidgetController* ARPGHUD::GetSpellMenuWidgetController(const FWidgetControllerParams& Params)
+{
+	if (SpellMenuWidgetController == nullptr)
+	{
+		SpellMenuWidgetController = NewObject<USpellMenuWidgetController>(this, SpellMenuWidgetControllerClass);
+		SpellMenuWidgetController->SetWidgetControllerParams(Params);
+		SpellMenuWidgetController->BindCallbacksToDependencies();
+	}
+	return SpellMenuWidgetController;
 }
 
 void ARPGHUD::InitOverlay(APlayerController* PC, APlayerState* PS, UAbilitySystemComponent* ASC, UAttributeSet* AS)

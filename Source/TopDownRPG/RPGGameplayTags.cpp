@@ -99,6 +99,16 @@ void FRPGGameplayTags::InitializeNativeGameplayTags()
 		FString("Number Key 4")
 	);
 
+	GameplayTags.Input_Passive_1 = UGameplayTagsManager::Get().AddNativeGameplayTag(
+	FName("Input.Passive.1"),
+	FString("Input for passive 1")
+);
+
+	GameplayTags.Input_Passive_2 = UGameplayTagsManager::Get().AddNativeGameplayTag(
+	FName("Input.Passive.2"),
+	FString("Input for passive 2")
+);
+
 	
 	// Damage types
 	GameplayTags.Damage = UGameplayTagsManager::Get().AddNativeGameplayTag(
