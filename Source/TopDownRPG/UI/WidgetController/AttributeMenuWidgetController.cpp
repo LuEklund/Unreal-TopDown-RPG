@@ -28,8 +28,7 @@ void UAttributeMenuWidgetController::BindCallbacksToDependencies()
 			}
 		);
 	}
-	ARPGPlayerState *RPGPlayerState = CastChecked<ARPGPlayerState>(PlayerState);
-	RPGPlayerState->OnAttributePointsChangedDelegate.AddLambda(
+	GetRPG_PS()->OnAttributePointsChangedDelegate.AddLambda(
 		[this](int32 Points)
 		{
 			AttributePointsChangedDelegate.Broadcast(Points);
@@ -38,14 +37,12 @@ void UAttributeMenuWidgetController::BindCallbacksToDependencies()
 
 void UAttributeMenuWidgetController::BroadcastInitialValues()
 {
-	URPGAttributeSet *AS = CastChecked<URPGAttributeSet>(AttributeSet);
 	check(AttributeInfo);
-	for (auto &Pair : AS->TagsToAttributes)
+	for (auto &Pair : GetRPG_AS()->TagsToAttributes)
 	{
 		BroadcastAttributeInfo(Pair.Key, Pair.Value());
 	}
-	ARPGPlayerState *RPGPlayerState = CastChecked<ARPGPlayerState>(PlayerState);
-	AttributePointsChangedDelegate.Broadcast(RPGPlayerState->GetAttributePoints());
+	AttributePointsChangedDelegate.Broadcast(GetRPG_PS()->GetAttributePoints());
 
 }
 

@@ -27,7 +27,7 @@ void URPGAbilitySystemComponent::AddCharacterAbilities(const TArray<TSubclassOf<
 		}
 	}
 	bStartupAbilitiesGive = true;
-	AbilitiesGivenDelegate.Broadcast(this);
+	AbilitiesGivenDelegate.Broadcast();
 }
 
 void URPGAbilitySystemComponent::AddCharacterPassiveAbilities(
@@ -139,7 +139,7 @@ void URPGAbilitySystemComponent::OnRep_ActivateAbilities()
 	if (!bStartupAbilitiesGive)
 	{
 		bStartupAbilitiesGive = true;
-		AbilitiesGivenDelegate.Broadcast(this);
+		AbilitiesGivenDelegate.Broadcast();
 	}
 }
 
