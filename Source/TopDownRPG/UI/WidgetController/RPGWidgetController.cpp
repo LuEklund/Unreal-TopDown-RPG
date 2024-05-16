@@ -70,6 +70,7 @@ void URPGWidgetController::BroadcastAbilityInfo()
 		{
 			FRPGAbilityInfo Info = AbilityInfo->FindAbilityInfoForTag(URPGAbilitySystemComponent::GetAbilityTagFromSpec(AbilitySpec));
 			Info.InputTag = URPGAbilitySystemComponent::GetInputTagFromSpec(AbilitySpec);
+			Info.StatusTag = URPGAbilitySystemComponent::GetStatusFromSpec(AbilitySpec);
 			AbilityInfoDelegate.Broadcast(Info);
 		});
 	GetRPG_ASC()->ForEachAbility(BroadcastDelegate);

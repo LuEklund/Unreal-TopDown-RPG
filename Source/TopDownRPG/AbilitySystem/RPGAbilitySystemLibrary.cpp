@@ -132,13 +132,23 @@ int32 URPGAbilitySystemLibrary::GetXPRewardForClassAndLevel(const UObject* World
 
 UCharacterClassInfo* URPGAbilitySystemLibrary::GetCharacterClassInfo(const UObject* WorldContextObject)
 {
-	ARPGGameModeBase *RPGGM = Cast<ARPGGameModeBase>(UGameplayStatics::GetGameMode(WorldContextObject));
+	const ARPGGameModeBase *RPGGM = Cast<ARPGGameModeBase>(UGameplayStatics::GetGameMode(WorldContextObject));
 	if (!RPGGM)
 	{
 		return nullptr;
 	}
 	
 	return (RPGGM->CharacterClassInfo);
+}
+
+UAbilityInfo* URPGAbilitySystemLibrary::GetAbilityInfo(const UObject* WorldContextObject)
+{
+	const ARPGGameModeBase *RPGGM = Cast<ARPGGameModeBase>(UGameplayStatics::GetGameMode(WorldContextObject));
+	if (!RPGGM)
+	{
+		return nullptr;
+	}
+	return (RPGGM->AbilityInfo);
 }
 
 /*
