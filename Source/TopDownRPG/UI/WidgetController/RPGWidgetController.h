@@ -54,6 +54,8 @@ class TOPDOWNRPG_API URPGWidgetController : public UObject
 {
 	GENERATED_BODY()
 protected:
+
+	//Default Params for Controller
 	UPROPERTY(BlueprintReadOnly, Category="WidgetController")
 	TObjectPtr<APlayerController>		PlayerController;
 
@@ -66,7 +68,7 @@ protected:
 	UPROPERTY(BlueprintReadOnly, Category="WidgetController")
 	TObjectPtr<UAttributeSet>			AttributeSet;
 	
-
+	//RPG Params for controller
 	UPROPERTY(BlueprintReadOnly, Category="WidgetController")
 	TObjectPtr<ARPGPlayerController>		RPGPlayerController;
 
