@@ -121,7 +121,12 @@ void ARPGCharacter::AddToPlayerLevel_Implementation(int32 InPlayerLevel)
 {
 	ARPGPlayerState *RPGPlayerState = GetPlayerState<ARPGPlayerState>();
 	check(RPGPlayerState);
-	return RPGPlayerState->AddToLevel(InPlayerLevel);
+	RPGPlayerState->AddToLevel(InPlayerLevel);
+
+	if (URPGAbilitySystemComponent	*RPGASC = Cast<URPGAbilitySystemComponent>(GetAbilitySystemComponent()))
+	{
+		RPGASC->UpdateAbilityStatuses(RPGPlayerState->GetPlayerLevel());
+	}
 }
 
 void ARPGCharacter::AddToSpellPoints_Implementation(int32 InSpellPoints)

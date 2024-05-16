@@ -4,7 +4,9 @@
 #include "RPGAbilitySystemComponent.h"
 
 #include "AbilitySystemBlueprintLibrary.h"
+#include "RPGAbilitySystemLibrary.h"
 #include "ability/RPGGameplayAbility.h"
+#include "Data/AbilityInfo.h"
 #include "TopDownRPG/RPGGameplayTags.h"
 #include "TopDownRPG/RPGLogChannels.h"
 #include "TopDownRPG/Interraction/PlayerInterface.h"
@@ -121,6 +123,22 @@ FGameplayTag URPGAbilitySystemComponent::GetStatusFromSpec(const FGameplayAbilit
 	return FGameplayTag();
 }
 
+FGameplayAbilitySpec* URPGAbilitySystemComponent::GetSpecFromAbilityTag(const FGameplayTag& AbilityTag)
+{
+	FScopedAbilityListLock	ActiveScopeLoc(*this);
+	for (FGameplayAbilitySpec &AbilitySpec : GetActivatableAbilities())
+	{
+		for (FGameplayTag Tag : AbilitySpec.Ability.Get()->AbilityTags)
+		{
+			if (Tag.MatchesTag(AbilityTag))
+			{
+				return (&AbilitySpec);
+			}
+		}
+	}
+	return (nullptr);
+}
+
 void URPGAbilitySystemComponent::UpgardeAttribute(const FGameplayTag& AttributeTag)
 {
 	if (GetAvatarActor()->Implements<UPlayerInterface>())
@@ -146,6 +164,24 @@ void URPGAbilitySystemComponent::ServerUpgradeAttribute_Implementation(const FGa
 	}
 }
 
+void URPGAbilitySystemComponent::UpdateAbilityStatuses(int32 Level)
+{
+	UAbilityInfo *AbilityInfo = URPGAbilitySystemLibrary::GetAbilityInfo(GetAvatarActor());
+
+	for (const FRPGAbilityInfo &Info : AbilityInfo->AbilityInformation)
+	{
+		if (!Info.AbilityTag.IsValid() || Level < Info.LevelRequirement) continue;
+		if (GetSpecFromAbilityTag(Info.AbilityTag) == nullptr)
+		{
+			FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(Info.Ability, 1);
+			AbilitySpec.DynamicAbilityTags.AddTag(FRPGGameplayTags::Get().Abilities_Status_Eligible);
+			GiveAbility(AbilitySpec);
+			MarkAbilitySpecDirty(AbilitySpec);
+			ClientUpdateAbilityStatus(Info.AbilityTag, FRPGGameplayTags::Get().Abilities_Status_Eligible);
+		}
+	}
+}
+
 void URPGAbilitySystemComponent::OnRep_ActivateAbilities()
 {
 	Super::OnRep_ActivateAbilities();
@@ -154,6 +190,12 @@ void URPGAbilitySystemComponent::OnRep_ActivateAbilities()
 		bStartupAbilitiesGive = true;
 		AbilitiesGivenDelegate.Broadcast();
 	}
+}
+
+void URPGAbilitySystemComponent::ClientUpdateAbilityStatus_Implementation(const FGameplayTag& AbilityTag,
+	const FGameplayTag& StatusTag)
+{
+	AbilityStatusChanged.Broadcast(AbilityTag, StatusTag);
 }
 
 void URPGAbilitySystemComponent::ClientEffectApplied_Implementation(UAbilitySystemComponent* AbilitySystemComponent,
