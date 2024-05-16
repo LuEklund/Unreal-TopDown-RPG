@@ -16,8 +16,16 @@ void USpellMenuWidgetController::BroadcastInitialValues()
 
 void USpellMenuWidgetController::BindCallbacksToDependencies()
 {
-	GetRPG_ASC()->AbilityStatusChanged.AddLambda([this](const FGameplayTag &AbilityTag, const FGameplayTag &StatusTag)
+	GetRPG_ASC()->AbilityStatusChanged.AddLambda([this](const FGameplayTag &AbilityTag, const FGameplayTag &StatusTag, int32 NewLevel)
 	{
+		if (SelectedAbility.Ability.MatchesTagExact(AbilityTag))
+		{
+			SelectedAbility.Status = StatusTag;
+			bool bEnableSpendPoints = false;
+			bool bEnableEquip = false;
+			ShouldEnableButtons(StatusTag, CurrentSpellPoints, bEnableSpendPoints, bEnableEquip);
+			SpellGlobeSelectedDelegate.Broadcast(bEnableSpendPoints, bEnableEquip);
+		}
 		if (AbilityInfo)
 		{
 			FRPGAbilityInfo Info = AbilityInfo->FindAbilityInfoForTag(AbilityTag);
@@ -29,6 +37,13 @@ void USpellMenuWidgetController::BindCallbacksToDependencies()
 	GetRPG_PS()->OnSpellPointsChangedDelegate.AddLambda([this](int32 SpellPoints)
 	{
 		SpellPointsChanged.Broadcast(SpellPoints);
+		CurrentSpellPoints = SpellPoints;
+		
+		bool bEnableSpendPoints = false;
+		
+		bool bEnableEquip = false;
+		ShouldEnableButtons(SelectedAbility.Status, CurrentSpellPoints, bEnableSpendPoints, bEnableEquip);
+		SpellGlobeSelectedDelegate.Broadcast(bEnableSpendPoints, bEnableEquip);
 	});
 }
 
@@ -50,14 +65,25 @@ void USpellMenuWidgetController::SpellGlobeSelected(const FGameplayTag& AbilityT
 	{
 		AbilityStatus = GetRPG_ASC()->GetStatusFromSpec(*AbilitySpec);
 	}
+
+	SelectedAbility.Ability = AbilityTag;
+	SelectedAbility.Status = AbilityStatus;
 	bool bEnableSpendPoints = false;
 	bool bEnableEquip = false;
 	ShouldEnableButtons(AbilityStatus, SpellPoints, bEnableSpendPoints, bEnableEquip);
 	SpellGlobeSelectedDelegate.Broadcast(bEnableSpendPoints, bEnableEquip);
 }
 
+void USpellMenuWidgetController::SpendPointsButtonSelected()
+{
+	if (GetRPG_ASC())
+	{
+		GetRPG_ASC()->ServerSpendSpellPoint(SelectedAbility.Ability);
+	}
+}
+
 void USpellMenuWidgetController::ShouldEnableButtons(const FGameplayTag& AbilityStatus, int32 SpellPoints,
-	bool& bShouldEnableSpellPointsButton, bool &bShouldEnableEquipButton)
+                                                     bool& bShouldEnableSpellPointsButton, bool &bShouldEnableEquipButton)
 {
 	const FRPGGameplayTags &GameplayTags = FRPGGameplayTags::Get();
 
