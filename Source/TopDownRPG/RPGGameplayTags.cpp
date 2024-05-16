@@ -175,6 +175,10 @@ void FRPGGameplayTags::InitializeNativeGameplayTags()
 
 	
 	// Abilities
+	GameplayTags.Abilities_None = UGameplayTagsManager::Get().AddNativeGameplayTag(
+	FName("Abilities.None"),
+	FString("None Ability tag, (nullptr)")
+	);
 	GameplayTags.Abilities_Attack = UGameplayTagsManager::Get().AddNativeGameplayTag(
 	FName("Abilities.Attack"),
 	FString("Attack Ability tag")
@@ -183,6 +187,8 @@ void FRPGGameplayTags::InitializeNativeGameplayTags()
 	FName("Abilities.Summon"),
 	FString("Summon Ability tag")
 	);
+	
+	
 	GameplayTags.Abilities_Fire_FireBolt = UGameplayTagsManager::Get().AddNativeGameplayTag(
 	FName("Abilities.Fire.FireBolt"),
 	FString("FireBolt Ability tag")
