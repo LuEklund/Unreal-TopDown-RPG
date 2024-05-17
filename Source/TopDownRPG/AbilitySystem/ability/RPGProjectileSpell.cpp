@@ -10,28 +10,7 @@
 #include "TopDownRPG/Interraction/CombatInterface.h"
 
 
-FString URPGProjectileSpell::GetDescription(int32 Level)
-{
-	
-	const int32 Damage = DamageTypes[FRPGGameplayTags::Get().Damage_Fire].GetValueAtLevel(Level);
-	if (Level == 1)
-	{
-		return (FString::Printf(TEXT("<Title>FIRE BOLT</> \n\n <Default> Launches a bolt of fire, exploding on impact and dealing: </>"
-							   "<Damage>%i</><Default> Fire Damage with a chance to burn</>\n\n <Small>Level: </><Level>%i</>"), Damage, Level));
-	}
-	else
-	{
-		return (FString::Printf(TEXT("<Title>FIRE BOLT</> \n\n <Default> Launches %i bolts of fire, exploding on impact and dealing: </>"
-							   "<Damage>%i</><Default> Fire Damage with a chance to burn</>\n\n <Small>Level: </><Level>%i</>"), FMath::Min(Level, NumProjectiles), Damage, Level));
-	}
-}
 
-FString URPGProjectileSpell::GetNextLevelDescription(int32 Level)
-{
-	const int32 Damage = DamageTypes[FRPGGameplayTags::Get().Damage_Fire].GetValueAtLevel(Level);
-	return (FString::Printf(TEXT("<Title>NEXT LEVEL</> \n\n <Default> Launches %i bolts of fire, exploding on impact and dealing: </>"
-								   "<Damage>%i</><Default> Fire Damage with a chance to burn</>\n\n <Small>Level: </><Level>%i</>"), FMath::Min(Level, NumProjectiles), Damage, Level));
-}
 
 void URPGProjectileSpell::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
                                           const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
