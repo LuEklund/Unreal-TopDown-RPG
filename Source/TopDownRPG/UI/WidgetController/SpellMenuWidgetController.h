@@ -11,6 +11,7 @@
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FSpellGlobeSelectedSignature, bool, bSpendPointsButtonEnabled, bool, bEquipButtonEnabled, FString, DescString, FString, NextLevelDescString);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FWaitForEquipSelectionSignature, const FGameplayTag &, AbilityType);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSpellGLobeReassignedSignature, const FGameplayTag &, AbilityTag);
 
 struct FSelectedAbility
 {
@@ -40,6 +41,9 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 	FWaitForEquipSelectionSignature	StopWaitForEquipDelegate;
+	
+	UPROPERTY(BlueprintAssignable)
+	FSpellGLobeReassignedSignature	SpellGLobeReassigned;
 
 	UFUNCTION(BlueprintCallable)
 	void	SpellGlobeSelected(const FGameplayTag &AbilityTag);
