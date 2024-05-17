@@ -208,6 +208,24 @@ void URPGAbilitySystemComponent::ServerSpendSpellPoint_Implementation(const FGam
 	}
 }
 
+bool URPGAbilitySystemComponent::GetDescriptionsByAbilityTag(const FGameplayTag& AbilityTag, FString& OutDesc,
+	FString& OutNextLevelDesc)
+{
+	if (const FGameplayAbilitySpec *AbilitySpec = GetSpecFromAbilityTag(AbilityTag))
+	{
+		if (URPGGameplayAbility *RPGAbility = Cast<URPGGameplayAbility>(AbilitySpec->Ability))
+		{
+			OutDesc = RPGAbility->GetDescription(AbilitySpec->Level);
+			OutNextLevelDesc = RPGAbility->GetNextLevelDescription(AbilitySpec->Level + 1);
+			return true;
+		}
+	}
+	const UAbilityInfo *AbilityInfo = URPGAbilitySystemLibrary::GetAbilityInfo(GetAvatarActor());
+	OutDesc = URPGGameplayAbility::GetLockedDescription(AbilityInfo->FindAbilityInfoForTag(AbilityTag).LevelRequirement);
+	OutNextLevelDesc = FString();
+	return false;
+}
+
 void URPGAbilitySystemComponent::OnRep_ActivateAbilities()
 {
 	Super::OnRep_ActivateAbilities();
