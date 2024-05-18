@@ -26,9 +26,50 @@ UExecCalc_Damage::UExecCalc_Damage()
 	RelevantAttributesToCapture.Add(DamageStatics().PhysicalResistanceDef);
 }
 
-void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams,
-	FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const
+void UExecCalc_Damage::DeterminDebuff(const FGameplayEffectCustomExecutionParameters& ExecutionParams, const FGameplayEffectSpec& Spec, FAggregatorEvaluateParameters EvaluateParameters,
+										TMap<FGameplayTag, FGameplayEffectAttributeCaptureDefinition> &InTagsToDefs) const
 {
+	const FRPGGameplayTags &GameplayTags = FRPGGameplayTags::Get();
+	for (TTuple<FGameplayTag, FGameplayTag> Pair : GameplayTags.DamageTypesToDebuffs)
+	{
+		const FGameplayTag &DamageType = Pair.Key;
+		const FGameplayTag &DebuffType = Pair.Value;
+		const float TypeDamge = Spec.GetSetByCallerMagnitude(DamageType, false, -1.f);
+		if (TypeDamge > -.5f) // .5 padding for floating point [im]precision
+		{
+			const float SourceDebuffChance = Spec.GetSetByCallerMagnitude(GameplayTags.Debuff_Chance, false, -1);
+			
+			float	TargetDebuffResistance = 0.f;
+			const FGameplayTag	&ResistanceTag = GameplayTags.DamageTypesToResistances[DamageType];
+			ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(InTagsToDefs[ResistanceTag], EvaluateParameters, TargetDebuffResistance);
+			TargetDebuffResistance = FMath::Max<float>(TargetDebuffResistance, 0.f);
+			const float EffectiveDebuffChance =  SourceDebuffChance * ((100.f - TargetDebuffResistance) / 100.f);
+			const bool bDebuff = FMath::RandRange(1, 100) < EffectiveDebuffChance;
+			if (bDebuff)
+			{
+				//TODO: What do we do?
+			}
+		}
+	}
+}
+
+void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams,
+                                              FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const
+{
+	TMap<FGameplayTag, FGameplayEffectAttributeCaptureDefinition>	TagsToCaptureDefs;
+	const FRPGGameplayTags &Tags = FRPGGameplayTags::Get();
+	TagsToCaptureDefs.Add(Tags.Attribute_Secondary_Armor, DamageStatics().ArmorDef);
+	TagsToCaptureDefs.Add(Tags.Attribute_Secondary_BlockChance, DamageStatics().BlockChanceDef);
+	TagsToCaptureDefs.Add(Tags.Attribute_Secondary_ArmorPenetration, DamageStatics().ArmorPenetrationDef);
+	TagsToCaptureDefs.Add(Tags.Attribute_Secondary_CriticalHitChance, DamageStatics().CriticalHitChanceDef);
+	TagsToCaptureDefs.Add(Tags.Attribute_Secondary_CriticalHitDamage, DamageStatics().CriticalHitDamageDef);
+	TagsToCaptureDefs.Add(Tags.Attribute_Secondary_CriticalHitResistance, DamageStatics().CriticalHitResistanceDef);
+		
+	TagsToCaptureDefs.Add(Tags.Attribute_Resistance_Fire, DamageStatics().FireResistanceDef);
+	TagsToCaptureDefs.Add(Tags.Attribute_Resistance_Lightning, DamageStatics().LightningResistanceDef);
+	TagsToCaptureDefs.Add(Tags.Attribute_Resistance_Arcane, DamageStatics().ArcaneResistanceDef);
+	TagsToCaptureDefs.Add(Tags.Attribute_Resistance_Physical, DamageStatics().PhysicalResistanceDef);
+	
 	const UAbilitySystemComponent *SourceASC = ExecutionParams.GetSourceAbilitySystemComponent();
 	const UAbilitySystemComponent *TargetASC = ExecutionParams.GetTargetAbilitySystemComponent();
 
@@ -55,11 +96,7 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	EvaluateParameters.TargetTags = TargetTags;
 
 	//	Debuff
-	// const FRPGGameplayTags &GameplayTags = FRPGGameplayTags::Get();
-	// for (TTuple<FGameplayTag, FGameplayTag> Pair : GameplayTags.DamageTypesToDebuffs)
-	// {
-	// 	Spec.GetSetByCallerMagnitude()
-	// }
+	DeterminDebuff(ExecutionParams, Spec, EvaluateParameters, TagsToCaptureDefs);
 
 	//Get Damage set by caller Magnitude
 	float Damage = 0.f;
@@ -68,8 +105,8 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 		const FGameplayTag DamageTypeTag = Pair.Key;
 		const FGameplayTag ResistanceTag = Pair.Value;
 		
-		checkf(RPGDamageStatics().TagsToCaptureDefs.Contains(ResistanceTag), TEXT("TagsToCaptureDefs does not contain TAG [%s] in ExecCalc_Damage"), *ResistanceTag.ToString());
-		const FGameplayEffectAttributeCaptureDefinition CaptureDef = RPGDamageStatics().TagsToCaptureDefs[ResistanceTag];
+		checkf(TagsToCaptureDefs.Contains(ResistanceTag), TEXT("TagsToCaptureDefs does not contain TAG [%s] in ExecCalc_Damage"), *ResistanceTag.ToString());
+		const FGameplayEffectAttributeCaptureDefinition CaptureDef = TagsToCaptureDefs[ResistanceTag];
 
 		float	DamageTypeValue = Spec.GetSetByCallerMagnitude(Pair.Key, false);
 

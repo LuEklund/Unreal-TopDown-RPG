@@ -23,8 +23,6 @@ struct RPGDamageStatics
 	DECLARE_ATTRIBUTE_CAPTUREDEF(ArcaneResistance);
 	DECLARE_ATTRIBUTE_CAPTUREDEF(PhysicalResistance);
 
-	TMap<FGameplayTag, FGameplayEffectAttributeCaptureDefinition> TagsToCaptureDefs;
-
 	RPGDamageStatics()
 	{
 		DEFINE_ATTRIBUTE_CAPTUREDEF(URPGAttributeSet, Armor, Target, false);
@@ -40,18 +38,7 @@ struct RPGDamageStatics
 		DEFINE_ATTRIBUTE_CAPTUREDEF(URPGAttributeSet, ArcaneResistance, Target, false);
 		DEFINE_ATTRIBUTE_CAPTUREDEF(URPGAttributeSet, PhysicalResistance, Target, false);
 
-		const FRPGGameplayTags &Tags = FRPGGameplayTags::Get();
-		TagsToCaptureDefs.Add(Tags.Attribute_Secondary_Armor, ArmorDef);
-		TagsToCaptureDefs.Add(Tags.Attribute_Secondary_BlockChance, BlockChanceDef);
-		TagsToCaptureDefs.Add(Tags.Attribute_Secondary_ArmorPenetration, ArmorPenetrationDef);
-		TagsToCaptureDefs.Add(Tags.Attribute_Secondary_CriticalHitChance, CriticalHitChanceDef);
-		TagsToCaptureDefs.Add(Tags.Attribute_Secondary_CriticalHitDamage, CriticalHitDamageDef);
-		TagsToCaptureDefs.Add(Tags.Attribute_Secondary_CriticalHitResistance, CriticalHitResistanceDef);
 		
-		TagsToCaptureDefs.Add(Tags.Attribute_Resistance_Fire, FireResistanceDef);
-		TagsToCaptureDefs.Add(Tags.Attribute_Resistance_Lightning, LightningResistanceDef);
-		TagsToCaptureDefs.Add(Tags.Attribute_Resistance_Arcane, ArcaneResistanceDef);
-		TagsToCaptureDefs.Add(Tags.Attribute_Resistance_Physical, PhysicalResistanceDef);
 
 	}
 };
@@ -70,6 +57,10 @@ class TOPDOWNRPG_API UExecCalc_Damage : public UGameplayEffectExecutionCalculati
 	GENERATED_BODY()
 public:
 	UExecCalc_Damage();
+	void DeterminDebuff(const FGameplayEffectCustomExecutionParameters& ExecutionParams,
+	                    const FGameplayEffectSpec& Spec,
+	                    FAggregatorEvaluateParameters EvaluateParameters,
+	                    TMap<FGameplayTag, FGameplayEffectAttributeCaptureDefinition> &InTagsToDefs) const;
 
 	virtual void Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams, FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const override;
 	
