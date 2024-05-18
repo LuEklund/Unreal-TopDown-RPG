@@ -7,8 +7,7 @@
 
 FString URPGFireBolt::GetDescription(int32 Level)
 {
-	
-	const int32 Damage = GetDamageByDamageType(Level, FRPGGameplayTags::Get().Damage_Fire);
+	const int32 ScaledDamage = Damage.GetValueAtLevel(Level);
 	const float ManaCost = FMath::Abs(GetManaCost(Level));
 	const float Cooldown = GetCooldown(Level);
 	if (Level == 1)
@@ -25,7 +24,7 @@ FString URPGFireBolt::GetDescription(int32 Level)
 							   Level,
 							   ManaCost,
 							   Cooldown,
-							   Damage
+							   ScaledDamage
 							   ));
 	}
 	else
@@ -43,7 +42,7 @@ FString URPGFireBolt::GetDescription(int32 Level)
 							   ManaCost,
 							   Cooldown,
 							   FMath::Min(Level, NumProjectiles),
-							   Damage
+							   ScaledDamage
 							   ));
 	}
 }
@@ -52,7 +51,7 @@ FString URPGFireBolt::GetNextLevelDescription(int32 Level)
 {
 	const float ManaCost = FMath::Abs(GetManaCost(Level));
 	const float Cooldown = GetCooldown(Level);
-	const int32 Damage = GetDamageByDamageType(Level, FRPGGameplayTags::Get().Damage_Fire);
+	const int32 ScaledDamage = Damage.GetValueAtLevel(Level);
 	return (FString::Printf(TEXT("<Title>NEXT LEVEL</> \n\n"
 		
 								"<Small>Level: </><Level>%i</> \n"
@@ -66,6 +65,6 @@ FString URPGFireBolt::GetNextLevelDescription(int32 Level)
 							  ManaCost,
 							  Cooldown,
 							  FMath::Min(Level, NumProjectiles),
-							  Damage
+							  ScaledDamage
 							  ));
 }
