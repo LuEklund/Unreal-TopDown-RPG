@@ -54,6 +54,13 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	EvaluateParameters.SourceTags = SourceTags;
 	EvaluateParameters.TargetTags = TargetTags;
 
+	//	Debuff
+	// const FRPGGameplayTags &GameplayTags = FRPGGameplayTags::Get();
+	// for (TTuple<FGameplayTag, FGameplayTag> Pair : GameplayTags.DamageTypesToDebuffs)
+	// {
+	// 	Spec.GetSetByCallerMagnitude()
+	// }
+
 	//Get Damage set by caller Magnitude
 	float Damage = 0.f;
 	for (const TTuple<FGameplayTag, FGameplayTag> &Pair : FRPGGameplayTags::Get().DamageTypesToResistances)
