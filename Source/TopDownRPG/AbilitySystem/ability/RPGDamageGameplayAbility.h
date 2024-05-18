@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "RPGGameplayAbility.h"
+#include "TopDownRPG/RPGAbilityTypes.h"
 #include "TopDownRPG/Interraction/CombatInterface.h"
 #include "RPGDamageGameplayAbility.generated.h"
 
@@ -18,6 +19,8 @@ class TOPDOWNRPG_API URPGDamageGameplayAbility : public URPGGameplayAbility
 public:
 	UFUNCTION(BlueprintCallable)
 	void	CauseDamage(AActor *TargetActor);
+
+	FDamageEffectParams	MakeDefaultEffectParamsFromClassDefaults(AActor *TargetActor = nullptr) const;
 	
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
@@ -29,6 +32,18 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category="Damage")
 	FScalableFloat	Damage;
 
+	UPROPERTY(EditDefaultsOnly, Category="Damage")
+	float			DebuffChance = 20.f;
+
+	UPROPERTY(EditDefaultsOnly, Category="Damage")
+	float			DebuffDamage = 5.f;
+	
+	UPROPERTY(EditDefaultsOnly, Category="Damage")	
+	float			DebuffFrquency = 1.f;
+	
+	UPROPERTY(EditDefaultsOnly, Category="Damage")
+	float			DebuffDuration = 5.f;
+	
 	UFUNCTION(BlueprintPure)
 	FTaggedMontage GetRandomTaggedMontageFromArray(const TArray<FTaggedMontage> &TaggedMontages) const;
 };

@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Data/CharacterClassInfo.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
+// #include "TopDownRPG/RPGAbilityTypes.h"
 #include "RPGAbilitySystemLibrary.generated.h"
 
 class UAbilityInfo;
@@ -12,6 +13,7 @@ class ARPGHUD;
 class USpellMenuWidgetController;
 struct FGameplayEffectContextHandle;
 struct FWidgetControllerParams;
+struct FDamageEffectParams;
 class UAttributeMenuWidgetController;
 class UOverlayWidgetController;
 /**
@@ -64,6 +66,9 @@ public:
 
 	UFUNCTION(BlueprintPure, Category="RPGAbilitySystemLibrary|GameplayMechanics")
 	static bool IsNotFriend(AActor *FirstActor, AActor *SecondActor);
+
+	UFUNCTION(BlueprintCallable, Category="RPGAbilitySystemLibrary|DamageEffect")
+	static FGameplayEffectContextHandle ApplyDamageEffect(const FDamageEffectParams &DamageEffectParams);
 
 	static int32	GetXPRewardForClassAndLevel(const UObject *WorldContextObject, ECharacterClass CharacterClass, int32 CharacterLevel);
 };
