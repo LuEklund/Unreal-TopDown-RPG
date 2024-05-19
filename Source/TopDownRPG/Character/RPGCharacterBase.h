@@ -9,6 +9,7 @@
 #include "TopDownRPG/AbilitySystem/Data/CharacterClassInfo.h"
 #include "RPGCharacterBase.generated.h"
 
+class UDebuffNiagaraComponent;
 class UNiagaraSystem;
 class UGameplayAbility;
 class UGameplayEffect;
@@ -92,6 +93,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Character class defaults")
 	ECharacterClass	CharacterClass = ECharacterClass::Warrior;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UDebuffNiagaraComponent>	BurnDebuffComponent;
 	
 public:
 	ARPGCharacterBase();
@@ -111,7 +115,12 @@ public:
 	virtual int32 GetMinionCount_Implementation() override;
 	virtual void IncrementMinionCount_Implementation(int32 Amount) override;
 	virtual ECharacterClass GetCharacterClass_Implementation() override;
+	virtual FOnASCRegistered GetOnAscRegisteredDelegate() override;
+	virtual	FOnDeath GetOnDeathDelegate() override;
 	// END Combat Interface
+
+	FOnASCRegistered	OnAscRegistered;
+	FOnDeath			OnDeath;
 	
 	UFUNCTION(NetMulticast, Reliable)
 	virtual void MulticastHandleDeath();

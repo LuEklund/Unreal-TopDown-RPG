@@ -147,6 +147,7 @@ void ARPGEnemy::InitAbilityActorInfo()
 	{
 		InitializeDefaultAttributes();
 	}
+	OnAscRegistered.Broadcast(AbilitySystemComponent);
 }
 
 void ARPGEnemy::InitializeDefaultAttributes() const

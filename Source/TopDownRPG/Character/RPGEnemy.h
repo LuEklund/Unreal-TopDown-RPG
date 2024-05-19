@@ -22,6 +22,8 @@ public:
 	ARPGEnemy();
 	virtual void PossessedBy(AController* NewController) override;
 
+	
+	
 	//Enemy Interface
 	virtual void HighLightActor() override;
 	virtual void UnHighLightActor() override;

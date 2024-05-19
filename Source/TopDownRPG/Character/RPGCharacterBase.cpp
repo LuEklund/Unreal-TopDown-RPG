@@ -8,20 +8,26 @@
 #include "TopDownRPG/RPGGameplayTags.h"
 #include "TopDownRPG/TopDownRPG.h"
 #include "TopDownRPG/AbilitySystem/RPGAbilitySystemComponent.h"
+#include "TopDownRPG/AbilitySystem/Debuff/DebuffNiagaraComponent.h"
 
 ARPGCharacterBase::ARPGCharacterBase()
 {
+	PrimaryActorTick.bCanEverTick = true;
 
+	BurnDebuffComponent = CreateDefaultSubobject<UDebuffNiagaraComponent>("BurnDebuffComponent");
+	BurnDebuffComponent->SetupAttachment(GetRootComponent());
+	BurnDebuffComponent->DebuffTag = FRPGGameplayTags::Get().Debuff_Burn;
+	
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 	GetCapsuleComponent()->SetGenerateOverlapEvents(false);
 	GetMesh()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 	GetMesh()->SetCollisionResponseToChannel(ECC_Projectile, ECR_Overlap);
 	GetMesh()->SetGenerateOverlapEvents(true);
 	
-	PrimaryActorTick.bCanEverTick = true;
 	Weapon = CreateDefaultSubobject<USkeletalMeshComponent>("Weapon");
 	Weapon->SetupAttachment(GetMesh(), FName("WeaponHandSocket"));
 	Weapon->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
 
 }
 
@@ -100,6 +106,16 @@ ECharacterClass ARPGCharacterBase::GetCharacterClass_Implementation()
 	return CharacterClass;
 }
 
+FOnASCRegistered ARPGCharacterBase::GetOnAscRegisteredDelegate()
+{
+	return OnAscRegistered;
+}
+
+FOnDeath ARPGCharacterBase::GetOnDeathDelegate()
+{
+	return OnDeath;
+}
+
 UAbilitySystemComponent* ARPGCharacterBase::GetAbilitySystemComponent() const
 {
 	return AbilitySystemComponent;
@@ -132,6 +148,7 @@ void ARPGCharacterBase::MulticastHandleDeath_Implementation()
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	Dissolve();
 	bDead = true;
+	OnDeath.Broadcast(this);
 }
 
 void ARPGCharacterBase::InitAbilityActorInfo()
