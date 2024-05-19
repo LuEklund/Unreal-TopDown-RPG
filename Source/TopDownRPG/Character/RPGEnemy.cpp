@@ -66,14 +66,14 @@ int32 ARPGEnemy::GetPlayerLevel_Implementation()
 	return Level;
 }
 
-void ARPGEnemy::Die()
+void ARPGEnemy::Die(const FVector &DeathImpulse)
 {
 	SetLifeSpan(LifeSpan);
 	if (RPGAIController)
 	{
 		RPGAIController->GetBlackboardComponent()->SetValueAsBool(FName("Dead"), true);
 	}
-	Super::Die();
+	Super::Die(DeathImpulse);
 }
 
 void ARPGEnemy::SetCombatTarget_Implementation(AActor* InCombatTarget)

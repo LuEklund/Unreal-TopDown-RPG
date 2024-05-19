@@ -227,10 +227,7 @@ FVector URPGAbilitySystemLibrary::GetDeathImpulse(const FGameplayEffectContextHa
 {
 	if (const FRPGGameplayEffectContext *RPGContext = static_cast<const FRPGGameplayEffectContext*>(EffectContextHandle.Get()))
 	{
-		if (RPGContext->GetDamageType().IsValid())
-		{
-			return RPGContext->GetDeathImpulse();
-		}
+		return RPGContext->GetDeathImpulse();
 	}
 	return FVector::ZeroVector;
 }

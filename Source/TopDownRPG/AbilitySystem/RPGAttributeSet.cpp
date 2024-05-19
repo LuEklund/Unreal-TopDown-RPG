@@ -7,6 +7,7 @@
 #include "GameplayEffectExtension.h"
 #include "RPGAbilitySystemLibrary.h"
 #include "GameFramework/Character.h"
+#include "GameplayEffectComponents/TargetTagsGameplayEffectComponent.h"
 #include "Net/UnrealNetwork.h"
 #include "TopDownRPG/RPGAbilityTypes.h"
 #include "TopDownRPG/RPGGameplayTags.h"
@@ -171,12 +172,10 @@ void URPGAttributeSet::HandleIncomingDamage(const FEffectProperties& Props)
 		const bool bFatal = NewHealth <= 0;
 		if (bFatal)
 		{
-			//TODO: Use Death Impulse
-			
 			ICombatInterface *CombatInterface = Cast<ICombatInterface>(Props.TargetAvatarActor);
 			if (CombatInterface)
 			{
-				CombatInterface->Die();
+				CombatInterface->Die(URPGAbilitySystemLibrary::GetDeathImpulse(Props.EffectContextHandle));
 			}
 			SendXPEvent(Props);
 		}
@@ -243,9 +242,15 @@ void URPGAttributeSet::HandleDebuff(const FEffectProperties& Props)
 	Effect->DurationPolicy = EGameplayEffectDurationType::HasDuration;
 	Effect->Period = DebuffFrequency;
 	Effect->DurationMagnitude = FScalableFloat(DebuffDuration);
-	
-	Effect->InheritableOwnedTagsContainer.AddTag(GameplayTags.DamageTypesToDebuffs[DamageType]);
 
+	// Effect->InheritableOwnedTagsContainer.AddTag(GameplayTags.DamageTypesToDebuffs[DamageType]);
+	FInheritedTagContainer TagContainer = FInheritedTagContainer();
+	// we create and add the component to the gameplay effect
+	UTargetTagsGameplayEffectComponent& TargetTagsComponent = Effect->AddComponent<UTargetTagsGameplayEffectComponent>(); 
+	TagContainer.Added.AddTag(GameplayTags.DamageTypesToDebuffs[DamageType]); 
+	TargetTagsComponent.SetAndApplyTargetTagChanges(TagContainer);
+	
+	
 	Effect->StackingType = EGameplayEffectStackingType::AggregateBySource;
 	Effect->StackLimitCount = 1;
 
