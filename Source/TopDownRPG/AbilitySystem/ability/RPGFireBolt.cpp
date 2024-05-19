@@ -3,6 +3,7 @@
 
 #include "RPGFireBolt.h"
 
+#include "GameFramework/ProjectileMovementComponent.h"
 #include "TopDownRPG/RPGGameplayTags.h"
 #include "TopDownRPG/AbilitySystem/RPGAbilitySystemLibrary.h"
 #include "TopDownRPG/Actor/RPGProjectile.h"
@@ -82,7 +83,8 @@ void URPGFireBolt::SpawnProjectiles(const FVector& ProjectileTargetLocation, con
 	if (bOverridePitch) Rotation.Pitch = PitchOverride;
 	const FVector Forward = Rotation.Vector();
 
-	TArray<FRotator> Rotations = URPGAbilitySystemLibrary::EvenlySpacedRotators(Forward, FVector::UpVector, ProjectileSpread, NumProjectiles);
+	const int32	EffectiveNumProjectiles = FMath::Min(NumProjectiles, GetAbilityLevel());
+	TArray<FRotator> Rotations = URPGAbilitySystemLibrary::EvenlySpacedRotators(Forward, FVector::UpVector, ProjectileSpread, EffectiveNumProjectiles);
 
 	for (const FRotator &Rot : Rotations)
 	{
@@ -99,6 +101,20 @@ void URPGFireBolt::SpawnProjectiles(const FVector& ProjectileTargetLocation, con
 
 		Projectile->DamageEffectParams = MakeDefaultEffectParamsFromClassDefaults();
 	
+		if (HomingTarget && HomingTarget->Implements<UCombatInterface>())
+		{
+			Projectile->ProjectileMovementComponent->HomingTargetComponent = HomingTarget->GetRootComponent();
+		}
+		else
+		{
+			Projectile->HomingTargetSceneComponent = NewObject<USceneComponent>(USceneComponent::StaticClass());
+			Projectile->HomingTargetSceneComponent->SetWorldLocation(ProjectileTargetLocation);
+			Projectile->ProjectileMovementComponent->HomingTargetComponent = Projectile->HomingTargetSceneComponent;
+		}
+		Projectile->ProjectileMovementComponent->HomingAccelerationMagnitude = FMath::FRandRange(HomingAcceleratorMin, HomingAcceleratorMax);
+		Projectile->ProjectileMovementComponent->bIsHomingProjectile = bLaunchHomingProjectile;
+
 		Projectile->FinishSpawning(SpawnTransform);
 	}
+
 }
