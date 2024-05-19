@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
 #include "GameplayTagContainer.h"
+#include "NiagaraSystem.h"
 #include "RPGPlayerController.generated.h"
 
 
@@ -67,6 +68,9 @@ private:
 	float	AutoRunAcceptanceRadius = 50.f;
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USplineComponent>	Spline;
+
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<UNiagaraSystem>		ClickNiagaraSystem;
 
 	void	AutoRun();
 
