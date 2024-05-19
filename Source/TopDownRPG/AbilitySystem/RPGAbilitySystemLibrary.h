@@ -77,6 +77,9 @@ public:
 
 	UFUNCTION(BlueprintPure, Category="RPGAbilitySystemLibrary|GameplayEffects")
 	static FVector GetDeathImpulse(const FGameplayEffectContextHandle &EffectContextHandle);
+
+	UFUNCTION(BlueprintPure, Category="RPGAbilitySystemLibrary|GameplayEffects")
+	static FVector GetKnockbackFOrce(const FGameplayEffectContextHandle &EffectContextHandle);
 	
 	UFUNCTION(BlueprintCallable, Category="RPGAbilitySystemLibrary|GameplayEffects")
 	static void SetIsBlockedHit(UPARAM(ref) FGameplayEffectContextHandle &EffectContextHandle, bool bInIsBlockedHit);
@@ -101,6 +104,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category="RPGAbilitySystemLibrary|GameplayEffects")
 	static void SetDeathImpulse(UPARAM(ref) FGameplayEffectContextHandle &EffectContextHandle, const FVector &InImpulse);
+
+	UFUNCTION(BlueprintCallable, Category="RPGAbilitySystemLibrary|GameplayEffects")
+	static void SetKnockbackForce(UPARAM(ref) FGameplayEffectContextHandle &EffectContextHandle, const FVector &InKnockbackForce);
 	/*========================
 	 * ExeCalc - END
 	 ========================*/

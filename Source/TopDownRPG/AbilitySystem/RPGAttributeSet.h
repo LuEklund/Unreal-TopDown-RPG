@@ -20,6 +20,7 @@ struct FEffectProperties
 	FEffectProperties(){}
 
 	FGameplayEffectContextHandle EffectContextHandle;
+	
 	UPROPERTY()
 	UAbilitySystemComponent	*SourceASC = nullptr;
 
