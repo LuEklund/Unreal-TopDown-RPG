@@ -4,6 +4,8 @@
 #include "RPGFireBolt.h"
 
 #include "TopDownRPG/RPGGameplayTags.h"
+#include "TopDownRPG/AbilitySystem/RPGAbilitySystemLibrary.h"
+#include "TopDownRPG/Actor/RPGProjectile.h"
 
 FString URPGFireBolt::GetDescription(int32 Level)
 {
@@ -67,4 +69,36 @@ FString URPGFireBolt::GetNextLevelDescription(int32 Level)
 							  FMath::Min(Level, NumProjectiles),
 							  ScaledDamage
 							  ));
+}
+
+void URPGFireBolt::SpawnProjectiles(const FVector& ProjectileTargetLocation, const FGameplayTag& SocketTag,
+	bool bOverridePitch, float PitchOverride, AActor* HomingTarget)
+{
+	const bool bIsServer = GetAvatarActorFromActorInfo()->HasAuthority();
+	if (bIsServer == false)	return;
+
+	const FVector SocketLocation = ICombatInterface::Execute_GetCombatSocketLocation(GetAvatarActorFromActorInfo(), SocketTag);
+	FRotator	Rotation = (ProjectileTargetLocation - SocketLocation).Rotation();
+	if (bOverridePitch) Rotation.Pitch = PitchOverride;
+	const FVector Forward = Rotation.Vector();
+
+	TArray<FRotator> Rotations = URPGAbilitySystemLibrary::EvenlySpacedRotators(Forward, FVector::UpVector, ProjectileSpread, NumProjectiles);
+
+	for (const FRotator &Rot : Rotations)
+	{
+		FTransform	SpawnTransform;
+		SpawnTransform.SetLocation(SocketLocation);
+		SpawnTransform.SetRotation(Rot.Quaternion());
+
+		ARPGProjectile *Projectile = GetWorld()->SpawnActorDeferred<ARPGProjectile>(
+		ProjectileClass,
+		SpawnTransform,
+		GetOwningActorFromActorInfo(),
+		Cast<APawn>(GetOwningActorFromActorInfo()),
+		ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+
+		Projectile->DamageEffectParams = MakeDefaultEffectParamsFromClassDefaults();
+	
+		Projectile->FinishSpawning(SpawnTransform);
+	}
 }
