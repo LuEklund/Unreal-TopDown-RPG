@@ -5,6 +5,7 @@
 
 #include "GameFramework/Character.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "TopDownRPG/AbilitySystem/RPGAbilitySystemLibrary.h"
 
 void URPGBeamSpell::StoreMouseDataInfo(const FHitResult& HitResult)
 {
@@ -57,4 +58,24 @@ void URPGBeamSpell::TraceFirstTarget(const FVector& BeamTargetLocation)
 			}
 		}
 	}
+}
+
+void URPGBeamSpell::StoreAdditionalTargets(TArray<AActor*>& OutAdditionalTargets)
+{
+	TArray<AActor*> ActorsToIgnore;
+	ActorsToIgnore.Add(GetAvatarActorFromActorInfo());
+	ActorsToIgnore.Add(MouseHitActor);
+	
+	TArray<AActor*> OverLappingActors;
+	URPGAbilitySystemLibrary::GetLivePlayersWithinRadius(
+		GetAvatarActorFromActorInfo(),
+		OverLappingActors,
+		ActorsToIgnore,
+		ShockRadius,
+		MouseHitActor->GetActorLocation());
+
+		// int32 NumAdditionalTarget = FMath::Min(GetAbilityLevel() - 1, MaxNumShockTargets);
+		int32 NumAdditionalTarget = 5;
+	URPGAbilitySystemLibrary::GetClosestTargets(NumAdditionalTarget, OverLappingActors, OutAdditionalTargets, MouseHitActor->GetActorLocation());
+	
 }
