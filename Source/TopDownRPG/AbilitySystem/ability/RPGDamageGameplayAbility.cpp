@@ -46,6 +46,11 @@ FDamageEffectParams URPGDamageGameplayAbility::MakeDefaultEffectParamsFromClassD
 	return Params;
 }
 
+float URPGDamageGameplayAbility::GetDamageAtLevel() const
+{
+	return Damage.GetValueAtLevel(GetAbilityLevel());
+}
+
 FTaggedMontage URPGDamageGameplayAbility::GetRandomTaggedMontageFromArray(const TArray<FTaggedMontage>& TaggedMontages) const
 {
 	int32 length = TaggedMontages.Num() - 1;

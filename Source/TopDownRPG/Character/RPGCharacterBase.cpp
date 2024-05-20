@@ -111,10 +111,10 @@ FOnASCRegistered ARPGCharacterBase::GetOnAscRegisteredDelegate()
 	return OnAscRegistered;
 }
 
-FOnDeath ARPGCharacterBase::GetOnDeathDelegate()
-{
-	return OnDeath;
-}
+// FOnDeath ARPGCharacterBase::GetOnDeathDelegate()
+// {
+// 	return OnDeath;
+// }
 
 USkeletalMeshComponent* ARPGCharacterBase::GetWeapon_Implementation()
 {
@@ -137,6 +137,11 @@ void ARPGCharacterBase::Die(const FVector &DeathImpulse)
 	MulticastHandleDeath(DeathImpulse);
 }
 
+FOnDeathSignature& ARPGCharacterBase::GetOnDeathDelegate()
+{
+	return OnDeathDelegate;
+}
+
 void ARPGCharacterBase::MulticastHandleDeath_Implementation(const FVector &DeathImpulse)
 {
 	UGameplayStatics::PlaySoundAtLocation(this, DeathSound, GetActorLocation(), GetActorRotation());
@@ -155,7 +160,9 @@ void ARPGCharacterBase::MulticastHandleDeath_Implementation(const FVector &Death
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	Dissolve();
 	bDead = true;
-	OnDeath.Broadcast(this);
+	BurnDebuffComponent->Deactivate();
+	OnDeathDelegate.Broadcast(this);
+	// OnDeath.Broadcast(this);
 }
 
 void ARPGCharacterBase::InitAbilityActorInfo()
