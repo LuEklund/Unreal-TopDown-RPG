@@ -82,12 +82,18 @@ void ARPGProjectile::OnHit()
 	if (LoopingSoundComponent)
 	{
 		LoopingSoundComponent->Stop();
+		LoopingSoundComponent->DestroyComponent();
 	}
 	bHit = true;
 }
 
 void ARPGProjectile::Destroyed()
 {
+	if (LoopingSoundComponent)
+	{
+		LoopingSoundComponent->Stop();
+		LoopingSoundComponent->DestroyComponent();
+	}
 	if (!bHit && !HasAuthority()) OnHit();
 	Super::Destroyed();
 }

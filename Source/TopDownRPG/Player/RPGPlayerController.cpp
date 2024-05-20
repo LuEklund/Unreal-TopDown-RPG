@@ -97,7 +97,7 @@ void ARPGPlayerController::AbilityInputTagPressed(FGameplayTag InputTag)
 		bTargeting = CurrentActor != nullptr;
 		bAutoRunning = false;
 	}
-
+	if (GetASC()) GetASC()->AbilityInputTagPressed(InputTag);
 }
 
 void ARPGPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
