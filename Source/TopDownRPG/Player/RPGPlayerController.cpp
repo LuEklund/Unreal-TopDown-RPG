@@ -76,6 +76,20 @@ void ARPGPlayerController::AutoRun()
 
 void ARPGPlayerController::CursorTrace()
 {
+	if (GetASC() && GetASC()->HasMatchingGameplayTag(FRPGGameplayTags::Get().Player_Block_CursorTrace))
+	{
+		if (LastActor)
+		{
+			LastActor->UnHighLightActor();
+			LastActor = nullptr;
+		}
+		if (CurrentActor)
+		{
+			CurrentActor->UnHighLightActor();
+			CurrentActor = nullptr;
+		}
+		return ;
+	}
 	GetHitResultUnderCursor(ECC_Visibility, false, CursorHit);
 	if (!CursorHit.bBlockingHit) return;
 	
@@ -92,6 +106,11 @@ void ARPGPlayerController::CursorTrace()
 
 void ARPGPlayerController::AbilityInputTagPressed(FGameplayTag InputTag)
 {
+	if (GetASC() && GetASC()->HasMatchingGameplayTag(FRPGGameplayTags::Get().Player_Block_InputPressed))
+	{
+		return;
+	}
+
 	if (InputTag.MatchesTagExact(FRPGGameplayTags::Get().Input_Mouse_LMB))
 	{
 		bTargeting = CurrentActor != nullptr;
@@ -102,6 +121,11 @@ void ARPGPlayerController::AbilityInputTagPressed(FGameplayTag InputTag)
 
 void ARPGPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
 {
+	if (GetASC() && GetASC()->HasMatchingGameplayTag(FRPGGameplayTags::Get().Player_Block_InputReleased))
+	{
+		return ;
+	}
+
 	if (!InputTag.MatchesTagExact(FRPGGameplayTags::Get().Input_Mouse_LMB))
 	{
 		if (GetASC())
@@ -133,7 +157,10 @@ void ARPGPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
 					bAutoRunning = true;
 				}
 			}
-			UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ClickNiagaraSystem, CachedDestination);
+			if (GetASC() && !GetASC()->HasMatchingGameplayTag(FRPGGameplayTags::Get().Player_Block_InputPressed))
+			{
+				UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ClickNiagaraSystem, CachedDestination);
+			}
 		}
 		FollowTime = 0;
 		bTargeting = false;
@@ -142,6 +169,10 @@ void ARPGPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
 
 void ARPGPlayerController::AbilityInputTagHeld(FGameplayTag InputTag)
 {
+	if (GetASC() && GetASC()->HasMatchingGameplayTag(FRPGGameplayTags::Get().Player_Block_InputHeld))
+	{
+		return ;
+	}
 	if (!InputTag.MatchesTagExact(FRPGGameplayTags::Get().Input_Mouse_LMB))
 	{
 		if (GetASC())
@@ -212,6 +243,11 @@ void ARPGPlayerController::SetupInputComponent()
 
 void ARPGPlayerController::Move(const FInputActionValue& InputActionValue)
 {
+	if (GetASC() && GetASC()->HasMatchingGameplayTag(FRPGGameplayTags::Get().Player_Block_InputPressed))
+	{
+		return ;
+	}
+
 	const FVector2D InputAxisVector = InputActionValue.Get<FVector2D>();
 	const FRotator Rotator = GetControlRotation();
 	const FRotator YawRotation(0.f, Rotator.Yaw, 0.f);
