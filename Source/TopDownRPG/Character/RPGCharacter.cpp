@@ -8,6 +8,7 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "TopDownRPG/RPGGameplayTags.h"
 #include "TopDownRPG/AbilitySystem/RPGAbilitySystemComponent.h"
 #include "TopDownRPG/AbilitySystem/Data/LevelUpInfo.h"
 #include "TopDownRPG/Player/RPGPlayerController.h"
@@ -165,6 +166,29 @@ int32 ARPGCharacter::GetPlayerLevel_Implementation()
 	return RPGPlayerState->GetPlayerLevel();
 }
 
+void ARPGCharacter::OnRep_Stunned()
+{
+	if (URPGAbilitySystemComponent *RPGASC = Cast<URPGAbilitySystemComponent>(AbilitySystemComponent))
+	{
+		const FRPGGameplayTags &GameplayTags = FRPGGameplayTags::Get();
+		FGameplayTagContainer BlockedTags;
+
+		BlockedTags.AddTag(GameplayTags.Player_Block_CursorTrace);
+		BlockedTags.AddTag(GameplayTags.Player_Block_InputHeld);
+		BlockedTags.AddTag(GameplayTags.Player_Block_InputPressed);
+		BlockedTags.AddTag(GameplayTags.Player_Block_InputReleased);
+		if (bIsStunned)
+		{
+			RPGASC->AddLooseGameplayTags(BlockedTags);
+		}
+		else
+		{
+			RPGASC->RemoveLooseGameplayTags(BlockedTags);
+		}
+	}
+	
+}
+
 void ARPGCharacter::InitAbilityActorInfo()
 {
 	ARPGPlayerState *RPGPlayerState = GetPlayerState<ARPGPlayerState>();
@@ -174,6 +198,7 @@ void ARPGCharacter::InitAbilityActorInfo()
 	Cast<URPGAbilitySystemComponent>(AbilitySystemComponent)->AbilityActorInfoSet();
 	AttributeSet = RPGPlayerState->GetAttributeSet();
 	OnAscRegistered.Broadcast(AbilitySystemComponent);
+	AbilitySystemComponent->RegisterGameplayTagEvent(FRPGGameplayTags::Get().Debuff_Stun, EGameplayTagEventType::NewOrRemoved).AddUObject(this, &ARPGCharacter::StunTagChanged);
 
 	if (ARPGPlayerController *RPGPlayerController = Cast<ARPGPlayerController>(GetController()))
 	{

@@ -4,7 +4,9 @@
 #include "RPGCharacterBase.h"
 #include "AbilitySystemComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Net/UnrealNetwork.h"
 #include "TopDownRPG/RPGGameplayTags.h"
 #include "TopDownRPG/TopDownRPG.h"
 #include "TopDownRPG/AbilitySystem/RPGAbilitySystemComponent.h"
@@ -29,6 +31,13 @@ ARPGCharacterBase::ARPGCharacterBase()
 	Weapon->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 
+}
+
+void ARPGCharacterBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ARPGCharacterBase, bIsStunned);
 }
 
 void ARPGCharacterBase::BeginPlay()
@@ -119,6 +128,17 @@ FOnASCRegistered ARPGCharacterBase::GetOnAscRegisteredDelegate()
 USkeletalMeshComponent* ARPGCharacterBase::GetWeapon_Implementation()
 {
 	return Weapon;
+}
+
+void ARPGCharacterBase::OnRep_Stunned()
+{
+	
+}
+
+void ARPGCharacterBase::StunTagChanged(const FGameplayTag CallbackTag, int32 NewCount)
+{
+	bIsStunned = NewCount > 0;
+	GetCharacterMovement()->MaxWalkSpeed = bIsStunned ? 0.f : BaseWalkSpeed;
 }
 
 UAbilitySystemComponent* ARPGCharacterBase::GetAbilitySystemComponent() const
