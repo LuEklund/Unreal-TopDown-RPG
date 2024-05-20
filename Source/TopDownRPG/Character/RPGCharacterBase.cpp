@@ -116,6 +116,11 @@ FOnDeath ARPGCharacterBase::GetOnDeathDelegate()
 	return OnDeath;
 }
 
+USkeletalMeshComponent* ARPGCharacterBase::GetWeapon_Implementation()
+{
+	return Weapon;
+}
+
 UAbilitySystemComponent* ARPGCharacterBase::GetAbilitySystemComponent() const
 {
 	return AbilitySystemComponent;
