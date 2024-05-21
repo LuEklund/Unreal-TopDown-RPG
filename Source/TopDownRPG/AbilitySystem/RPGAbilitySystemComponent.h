@@ -61,6 +61,7 @@ public:
 
 	bool	GetDescriptionsByAbilityTag(const FGameplayTag &AbilityTag, FString &OutDesc, FString &OutNextLevelDesc);
 
+	UFUNCTION(Client, Reliable)
 	void	ClientEquipAbility(const FGameplayTag &AbilityTag, const FGameplayTag &Status, const FGameplayTag &Slot, const FGameplayTag &PreviousSlot);
 
 	void	ClearSlot(FGameplayAbilitySpec *Spec);
