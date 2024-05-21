@@ -11,6 +11,7 @@ DECLARE_MULTICAST_DELEGATE(FAbilitiesGiven);
 DECLARE_DELEGATE_OneParam(FForEachAbility, const FGameplayAbilitySpec&);
 DECLARE_MULTICAST_DELEGATE_ThreeParams(FAbilityStatusChanged, const FGameplayTag&, const FGameplayTag&, int32);
 DECLARE_MULTICAST_DELEGATE_FourParams(FAbilityEquipped, const FGameplayTag&, const FGameplayTag&, const FGameplayTag&, const FGameplayTag&);
+DECLARE_MULTICAST_DELEGATE_OneParam(FDeactivatePassiveAbility, const FGameplayTag&);
 
 /**
  * 
@@ -21,10 +22,11 @@ class TOPDOWNRPG_API URPGAbilitySystemComponent : public UAbilitySystemComponent
 	GENERATED_BODY()
 public:
 	void	AbilityActorInfoSet();
-	FEffectAssetTags		EffectAssetTags;
-	FAbilitiesGiven			AbilitiesGivenDelegate;
-	FAbilityStatusChanged	AbilityStatusChanged;
-	FAbilityEquipped		AbilityEquipped;
+	FEffectAssetTags		    EffectAssetTags;
+	FAbilitiesGiven			    AbilitiesGivenDelegate;
+	FAbilityStatusChanged	    AbilityStatusChanged;
+	FAbilityEquipped		    AbilityEquipped;
+	FDeactivatePassiveAbility	DeactivatePassiveAbility;
 
 	void	AddCharacterAbilities(const TArray<TSubclassOf<UGameplayAbility>> &StartupAbilities);
 	void	AddCharacterPassiveAbilities(const TArray<TSubclassOf<UGameplayAbility>> &StartupPassiveAbilities);

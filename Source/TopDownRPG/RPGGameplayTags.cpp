@@ -236,6 +236,22 @@ void FRPGGameplayTags::InitializeNativeGameplayTags()
 	FName("Abilities.Lightning.Electrocute"),
 	FString("Electrocute Ability tag")
 	);
+
+	
+	//Passive Spells
+	GameplayTags.Abilities_Passive_LifeSiphon = UGameplayTagsManager::Get().AddNativeGameplayTag(
+	FName("Abilities.Passive.LifeSiphon"),
+	FString("Life Siphon")
+	);
+	GameplayTags.Abilities_Passive_ManaSiphon = UGameplayTagsManager::Get().AddNativeGameplayTag(
+	FName("Abilities.Passive.ManaSiphon"),
+	FString("ManaSiphon")
+	);
+	GameplayTags.Abilities_Passive_HaloOfProtection = UGameplayTagsManager::Get().AddNativeGameplayTag(
+	FName("Abilities.Passive.HaloOfProtection"),
+	FString("HaloOfProtection")
+	);
+
 	
 	GameplayTags.Abilities_HitReact = UGameplayTagsManager::Get().AddNativeGameplayTag(
 	FName("Abilities.HitReact"),
