@@ -11,6 +11,7 @@
 #include "TopDownRPG/RPGGameplayTags.h"
 #include "TopDownRPG/AbilitySystem/RPGAbilitySystemComponent.h"
 #include "TopDownRPG/AbilitySystem/Data/LevelUpInfo.h"
+#include "TopDownRPG/AbilitySystem/Debuff/DebuffNiagaraComponent.h"
 #include "TopDownRPG/Player/RPGPlayerController.h"
 #include "TopDownRPG/Player/RPGPlayerState.h"
 #include "TopDownRPG/UI/HUD/RPGHUD.h"
@@ -180,13 +181,28 @@ void ARPGCharacter::OnRep_Stunned()
 		if (bIsStunned)
 		{
 			RPGASC->AddLooseGameplayTags(BlockedTags);
+			StunDebuffComponent->Activate();
 		}
 		else
 		{
 			RPGASC->RemoveLooseGameplayTags(BlockedTags);
+			StunDebuffComponent->Deactivate();
+
 		}
 	}
 	
+}
+
+void ARPGCharacter::OnRep_Burned()
+{
+	if (bIsBurned)
+	{
+		BurnDebuffComponent->Activate();
+	}
+	else
+	{
+		BurnDebuffComponent->Deactivate();
+	}
 }
 
 void ARPGCharacter::InitAbilityActorInfo()
