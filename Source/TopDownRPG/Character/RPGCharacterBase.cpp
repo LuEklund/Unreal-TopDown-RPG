@@ -43,6 +43,7 @@ void ARPGCharacterBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Ou
 
 	DOREPLIFETIME(ARPGCharacterBase, bIsStunned);
 	DOREPLIFETIME(ARPGCharacterBase, bIsBurned);
+	DOREPLIFETIME(ARPGCharacterBase, bIsBeingShocked);
 }
 
 void ARPGCharacterBase::BeginPlay()
@@ -133,6 +134,16 @@ FOnASCRegistered &ARPGCharacterBase::GetOnAscRegisteredDelegate()
 USkeletalMeshComponent* ARPGCharacterBase::GetWeapon_Implementation()
 {
 	return Weapon;
+}
+
+void ARPGCharacterBase::SetIsBeingShocked_Implementation(bool bInShock)
+{
+	bIsBeingShocked = bInShock;
+}
+
+bool ARPGCharacterBase::IsBeingShocked_Implementation() const
+{
+	return bIsBeingShocked;
 }
 
 void ARPGCharacterBase::OnRep_Stunned()

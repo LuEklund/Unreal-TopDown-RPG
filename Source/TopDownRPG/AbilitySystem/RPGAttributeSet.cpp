@@ -181,9 +181,12 @@ void URPGAttributeSet::HandleIncomingDamage(const FEffectProperties& Props)
 		}
 		else
 		{
-			FGameplayTagContainer	TagContainer;
-			TagContainer.AddTag(FRPGGameplayTags::Get().Effects_HitReact);
-			Props.TargetASC->TryActivateAbilitiesByTag(TagContainer);
+			if (Props.TargetCharacter->Implements<UCombatInterface>() && !ICombatInterface::Execute_IsBeingShocked(Props.TargetCharacter))
+			{
+				FGameplayTagContainer	TagContainer;
+				TagContainer.AddTag(FRPGGameplayTags::Get().Effects_HitReact);
+				Props.TargetASC->TryActivateAbilitiesByTag(TagContainer);
+			}
 
 			const FVector &KnockbackForce = URPGAbilitySystemLibrary::GetKnockbackFOrce(Props.EffectContextHandle);
 			if (!KnockbackForce.IsNearlyZero(1.f))
