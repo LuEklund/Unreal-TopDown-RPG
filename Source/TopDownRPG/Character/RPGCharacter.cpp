@@ -160,6 +160,22 @@ int32 ARPGCharacter::GetSpellPoints_Implementation() const
 
 }
 
+void ARPGCharacter::ShowMagicCircle_Implementation(UMaterialInterface* DecalMaterial)
+{
+	if (ARPGPlayerController *RPGPlayerController = Cast<ARPGPlayerController>(GetController()))
+	{
+		RPGPlayerController->ShowMagicCircle(DecalMaterial);
+	}
+}
+
+void ARPGCharacter::HideMagicCircle_Implementation()
+{
+	if (ARPGPlayerController *RPGPlayerController = Cast<ARPGPlayerController>(GetController()))
+	{
+		RPGPlayerController->HideMagicCircle();
+	}
+}
+
 int32 ARPGCharacter::GetPlayerLevel_Implementation()
 {
 	const ARPGPlayerState *RPGPlayerState = GetPlayerState<ARPGPlayerState>();

@@ -8,12 +8,14 @@
 #include "NavigationPath.h"
 #include "NavigationSystem.h"
 #include "NiagaraFunctionLibrary.h"
+#include "Components/DecalComponent.h"
 #include "Components/SplineComponent.h"
 #include "TopDownRPG/RPGGameplayTags.h"
 #include "TopDownRPG/AbilitySystem/RPGAbilitySystemComponent.h"
 #include "TopDownRPG/Input/RPGInputComponent.h"
 #include "TopDownRPG/Interraction/EnemyInterface.h"
 #include "GameFramework/Character.h"
+#include "TopDownRPG/Actor/MagicCircle.h"
 #include "TopDownRPG/UI/Widget/DamageTextComponent.h"
 
 
@@ -28,6 +30,13 @@ URPGAbilitySystemComponent* ARPGPlayerController::GetASC()
 }
 
 
+void ARPGPlayerController::UpdateMagicCircleLocation()
+{
+	if (IsValid(MagicCircle))
+	{
+		MagicCircle->SetActorLocation(CursorHit.ImpactPoint);
+	}
+}
 
 ARPGPlayerController::ARPGPlayerController()
 {
@@ -42,7 +51,29 @@ void ARPGPlayerController::PlayerTick(float DeltaTime)
 	Super::PlayerTick(DeltaTime);
 	CursorTrace();
 	AutoRun();
+	UpdateMagicCircleLocation();
 
+}
+
+void ARPGPlayerController::ShowMagicCircle(UMaterialInterface *DecalMaterial)
+{
+	if (!MagicCircle)
+	{
+		MagicCircle = GetWorld()->SpawnActor<AMagicCircle>(MagicCircleClass);
+		if (DecalMaterial != nullptr)
+		{
+			MagicCircle->MagicCircleDecal->SetMaterial(0, DecalMaterial);
+		}
+	}
+}
+
+void ARPGPlayerController::HideMagicCircle()
+{
+	if (IsValid(MagicCircle))
+	{
+		MagicCircle->Destroy();
+	}
+		
 }
 
 void ARPGPlayerController::ShowDamageNumber_Implementation(float DamageAmount, ACharacter *TargetCharacter, bool bBlockHit, bool bCriticalHit)
