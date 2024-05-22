@@ -57,7 +57,7 @@ void ARPGPlayerController::PlayerTick(float DeltaTime)
 
 void ARPGPlayerController::ShowMagicCircle(UMaterialInterface *DecalMaterial)
 {
-	if (!MagicCircle)
+	if (!IsValid(MagicCircle))
 	{
 		MagicCircle = GetWorld()->SpawnActor<AMagicCircle>(MagicCircleClass);
 		if (DecalMaterial != nullptr)

@@ -165,6 +165,7 @@ void ARPGCharacter::ShowMagicCircle_Implementation(UMaterialInterface* DecalMate
 	if (ARPGPlayerController *RPGPlayerController = Cast<ARPGPlayerController>(GetController()))
 	{
 		RPGPlayerController->ShowMagicCircle(DecalMaterial);
+		RPGPlayerController->bShowMouseCursor = false;
 	}
 }
 
@@ -173,6 +174,7 @@ void ARPGCharacter::HideMagicCircle_Implementation()
 	if (ARPGPlayerController *RPGPlayerController = Cast<ARPGPlayerController>(GetController()))
 	{
 		RPGPlayerController->HideMagicCircle();
+		RPGPlayerController->bShowMouseCursor = true;
 	}
 }
 

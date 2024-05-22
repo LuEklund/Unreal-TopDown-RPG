@@ -52,7 +52,7 @@ void URPGAbilitySystemComponent::AbilityInputTagPressed(const FGameplayTag& Inpu
 		if (AbilitySpec.DynamicAbilityTags.HasTagExact(InputTag))
 		{
 			AbilitySpecInputPressed(AbilitySpec);
-			if (!AbilitySpec.IsActive())
+			if (AbilitySpec.IsActive())
 			{
 				InvokeReplicatedEvent(EAbilityGenericReplicatedEvent::InputPressed, AbilitySpec.Handle, AbilitySpec.ActivationInfo.GetActivationPredictionKey());
 			}
