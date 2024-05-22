@@ -63,7 +63,7 @@ TArray<USceneComponent*> APointCollection::GetGroundPoints(const FVector& Ground
 	for (USceneComponent *Pt : ImmutablePts)
 	{
 		if (ArrayCopy.Num() > NumPoints) return ArrayCopy;
-		DrawDebugSphere(GetWorld(), Pt->GetComponentLocation(), 5.f, 12, FColor::Red, false, 5.f, 0, 2.f);
+		// DrawDebugSphere(GetWorld(), Pt->GetComponentLocation(), 5.f, 12, FColor::Red, false, 10.f, 0, 2.f);
 		if (Pt != Pt_0)
 		{
 			FVector ToPoint = Pt->GetComponentLocation() - Pt_0->GetComponentLocation();
@@ -72,20 +72,20 @@ TArray<USceneComponent*> APointCollection::GetGroundPoints(const FVector& Ground
 		}
 		const FVector RaisedLocation = FVector(Pt->GetComponentLocation().X, Pt->GetComponentLocation().Y, Pt->GetComponentLocation().Z + 500.f);
 		const FVector LoweredLocation = FVector(Pt->GetComponentLocation().X, Pt->GetComponentLocation().Y, Pt->GetComponentLocation().Z - 500.f);
-
+		
 		FHitResult HitResult;
 		TArray<AActor *> IgnoreActors;
 		URPGAbilitySystemLibrary::GetLivePlayersWithinRadius(this, IgnoreActors, TArray<AActor*>(), 1500.f, GetActorLocation());
-
+		
 		FCollisionQueryParams	QueryParams;
 		QueryParams.AddIgnoredActors(IgnoreActors);
-		DrawDebugLine(GetWorld(), RaisedLocation, LoweredLocation, FColor::Red, false, 5.f, 0, 2.f);
+		// DrawDebugLine(GetWorld(), RaisedLocation, LoweredLocation, FColor::Red, false, 5.f, 0, 2.f);
 		GetWorld()->LineTraceSingleByProfile(HitResult, RaisedLocation, LoweredLocation, FName("BlockAll"), QueryParams);
-
+		
 		const FVector	AdjustedLocation = FVector(Pt->GetComponentLocation().X, Pt->GetComponentLocation().Y, HitResult.ImpactPoint.Z);
 		Pt->SetWorldLocation(AdjustedLocation);
-		Pt->SetWorldRotation(UKismetMathLibrary::MakeRotFromZ(HitResult.ImpactPoint));
-
+		// Pt->SetWorldRotation(UKismetMathLibrary::MakeRotFromZ(HitResult.ImpactPoint));
+		
 		ArrayCopy.Add(Pt);
 	}
 	return ArrayCopy;
