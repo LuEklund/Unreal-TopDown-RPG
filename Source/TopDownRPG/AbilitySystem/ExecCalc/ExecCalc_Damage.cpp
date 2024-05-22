@@ -4,6 +4,7 @@
 #include "ExecCalc_Damage.h"
 
 #include "AbilitySystemComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "TopDownRPG/RPGAbilityTypes.h"
 #include "TopDownRPG/RPGGameplayTags.h"
 #include "TopDownRPG/AbilitySystem/RPGAbilitySystemLibrary.h"
@@ -97,8 +98,8 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	{
 		TargetPlayerLevel = ICombatInterface::Execute_GetPlayerLevel(TargetAvatar);
 	}
-
 	const FGameplayEffectSpec &Spec = ExecutionParams.GetOwningSpec();
+	FGameplayEffectContextHandle EffectContextHandle = Spec.GetContext();
 
 	const FGameplayTagContainer *SourceTags = Spec.CapturedSourceTags.GetAggregatedTags();
 	const FGameplayTagContainer *TargetTags = Spec.CapturedTargetTags.GetAggregatedTags();
@@ -126,6 +127,33 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 		Resistance = FMath::Clamp(Resistance, 0.f, 100.f);
 
 		DamageTypeValue *= (100.f - Resistance) / 100.f;
+		if (DamageTypeValue <= 0)
+		{
+			continue;
+		}
+
+		if (URPGAbilitySystemLibrary::IsRadialDamage(EffectContextHandle))
+		{
+			if (ICombatInterface *CombatInterface = Cast<ICombatInterface>(TargetAvatar))
+			{
+				CombatInterface->GetOnDamageSignature().AddLambda([&DamageTypeValue](float DamageAmount)
+				{
+					DamageTypeValue = DamageAmount;
+				});
+			}
+			UGameplayStatics::ApplyRadialDamageWithFalloff(
+				TargetAvatar,
+				DamageTypeValue,
+				0.f,
+				URPGAbilitySystemLibrary::GetRadialDamageOrigin(EffectContextHandle),
+				URPGAbilitySystemLibrary::GetRadialDamageInnerRadius(EffectContextHandle),
+				URPGAbilitySystemLibrary::GetRadialDamageOuterRadius(EffectContextHandle),
+				1.f,
+				UDamageType::StaticClass(),
+				TArray<AActor*>(),
+				SourceAvatar,
+				nullptr);
+		}
 		
 		Damage += DamageTypeValue;
 	}
@@ -141,7 +169,6 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	{
 		Damage = Damage / 2.f;
 	}
-	FGameplayEffectContextHandle EffectContextHandle = Spec.GetContext();
 	URPGAbilitySystemLibrary::SetIsBlockedHit(EffectContextHandle,bBlock);
 
 	//Get Target Armor

@@ -15,6 +15,7 @@
 #include "TopDownRPG/Input/RPGInputComponent.h"
 #include "TopDownRPG/Interraction/EnemyInterface.h"
 #include "GameFramework/Character.h"
+#include "TopDownRPG/TopDownRPG.h"
 #include "TopDownRPG/Actor/MagicCircle.h"
 #include "TopDownRPG/UI/Widget/DamageTextComponent.h"
 
@@ -121,7 +122,8 @@ void ARPGPlayerController::CursorTrace()
 		}
 		return ;
 	}
-	GetHitResultUnderCursor(ECC_Visibility, false, CursorHit);
+	const ECollisionChannel	TraceChannel = IsValid(MagicCircle) ? ECC_ExcludePlayers : ECC_Visibility;
+	GetHitResultUnderCursor(TraceChannel, false, CursorHit);
 	if (!CursorHit.bBlockingHit) return;
 	
 	LastActor = CurrentActor;

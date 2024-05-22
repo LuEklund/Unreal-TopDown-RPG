@@ -16,7 +16,7 @@ void URPGDamageGameplayAbility::CauseDamage(AActor* TargetActor)
 }
 
 
-FDamageEffectParams URPGDamageGameplayAbility::MakeDefaultEffectParamsFromClassDefaults(AActor* TargetActor) const
+FDamageEffectParams URPGDamageGameplayAbility::MakeDefaultEffectParamsFromClassDefaults(AActor* TargetActor, FVector InRadialDamageOrigin) const
 {
 	FDamageEffectParams Params;
 	Params.WorldContextObject = GetAvatarActorFromActorInfo();
@@ -42,7 +42,13 @@ FDamageEffectParams URPGDamageGameplayAbility::MakeDefaultEffectParamsFromClassD
 		Params.DeathImpulse = ToTarget * DeathImpulseMagnitude;
 		Params.KnockbackForce = ToTarget * KnockbackForceMagnitude;
 	}
-	
+	if (bIsRadialDamage)
+	{
+		Params.bIsRadialDamage = bIsRadialDamage;
+		Params.RadialDamageOrigin = InRadialDamageOrigin;
+		Params.RadialDamageInnerRadius = RadialDamageInnerRadius;
+		Params.RadialDamageOuterRadius = RadialDamageOuterRadius;
+	}
 	return Params;
 }
 

@@ -17,6 +17,7 @@ class UGameplayEffect;
 class UAttributeSet;
 class UAbilitySystemComponent;
 
+
 UCLASS(Abstract)
 class TOPDOWNRPG_API ARPGCharacterBase : public ACharacter, public IAbilitySystemInterface, public ICombatInterface
 {
@@ -124,6 +125,7 @@ public:
 	virtual void Tick(float DeltaSeconds) override;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 	UAttributeSet	*GetAttributeSet() const {return (AttributeSet);}
 
 	//Combat Interface
@@ -143,11 +145,12 @@ public:
 	virtual USkeletalMeshComponent	*GetWeapon_Implementation() override;
 	virtual void	SetIsBeingShocked_Implementation(bool bInShock) override;
 	virtual bool	IsBeingShocked_Implementation() const override;
+	virtual FOnDamageSignature	&GetOnDamageSignature() override;
 	// END Combat Interface
 
 	FOnASCRegistered	OnAscRegistered;
 	FOnDeathSignature	OnDeathDelegate;
-	// FOnDeath			OnDeath;
+	FOnDamageSignature	OnDamageDelegate;
 	
 	UFUNCTION(NetMulticast, Reliable)
 	virtual void MulticastHandleDeath(const FVector &DeathImpulse);

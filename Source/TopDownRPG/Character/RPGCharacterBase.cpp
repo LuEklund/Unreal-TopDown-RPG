@@ -164,6 +164,11 @@ bool ARPGCharacterBase::IsBeingShocked_Implementation() const
 	return bIsBeingShocked;
 }
 
+FOnDamageSignature& ARPGCharacterBase::GetOnDamageSignature()
+{
+	return OnDamageDelegate;
+}
+
 void ARPGCharacterBase::OnRep_Stunned()
 {
 	
@@ -182,6 +187,14 @@ void ARPGCharacterBase::StunTagChanged(const FGameplayTag CallbackTag, int32 New
 UAbilitySystemComponent* ARPGCharacterBase::GetAbilitySystemComponent() const
 {
 	return AbilitySystemComponent;
+}
+
+float ARPGCharacterBase::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,
+	AActor* DamageCauser)
+{
+	const float DamageTaken = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+	OnDamageDelegate.Broadcast(DamageTaken);
+	return DamageTaken;
 }
 
 UAnimMontage* ARPGCharacterBase::GetHitReactMontage_Implementation()
