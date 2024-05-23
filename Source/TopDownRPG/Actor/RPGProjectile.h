@@ -22,7 +22,6 @@ private:
 
 	UPROPERTY(EditDefaultsOnly)
 	float LifeSpan = 15.f;
-	bool	bHit = false;
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UNiagaraSystem>	ImpactEffect;
 	UPROPERTY(EditAnywhere)
@@ -42,7 +41,10 @@ protected:
 
 	UFUNCTION(BlueprintCallable)
 	void OnHit();
+	bool	bHit = false;
 	virtual void Destroyed() override;
+
+	bool	IsValidOverlap(AActor *OtherActor);
 	
 public:	
 	ARPGProjectile();

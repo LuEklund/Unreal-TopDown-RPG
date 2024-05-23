@@ -36,13 +36,9 @@ ARPGProjectile::ARPGProjectile()
 void ARPGProjectile::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (DamageEffectParams.SourceAbilitySystemComponent == nullptr) return;
-	AActor *SourceAvatarActor = DamageEffectParams.SourceAbilitySystemComponent->GetAvatarActor();
-	if (SourceAvatarActor == OtherActor || !URPGAbilitySystemLibrary::IsNotFriend(SourceAvatarActor, OtherActor))
-	{
-		return ;
-	}
+	if (!IsValidOverlap(OtherActor)) return;
 	if (!bHit) OnHit();
+	
 	if (HasAuthority())
 	{
 		if (UAbilitySystemComponent *TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OtherActor))
@@ -98,6 +94,17 @@ void ARPGProjectile::Destroyed()
 	}
 	if (!bHit && !HasAuthority()) OnHit();
 	Super::Destroyed();
+}
+
+bool ARPGProjectile::IsValidOverlap(AActor *OtherActor)
+{
+	if (DamageEffectParams.SourceAbilitySystemComponent == nullptr) return false;
+	AActor *SourceAvatarActor = DamageEffectParams.SourceAbilitySystemComponent->GetAvatarActor();
+	if (SourceAvatarActor == OtherActor || !URPGAbilitySystemLibrary::IsNotFriend(SourceAvatarActor, OtherActor))
+	{
+		return false;
+	}
+	return true;
 }
 
 
