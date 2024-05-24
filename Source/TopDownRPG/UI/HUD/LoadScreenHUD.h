@@ -26,7 +26,7 @@ public:
 	TSubclassOf<UMVVM_LoadScreen>	LoadScreenViewModelClass;
 
 	UPROPERTY(BlueprintReadOnly)
-	TObjectPtr<UMVVM_LoadScreen>	LoadScreenViewMode;
+	TObjectPtr<UMVVM_LoadScreen>	LoadScreenViewModel;
 	
 protected:
 	virtual void BeginPlay() override;

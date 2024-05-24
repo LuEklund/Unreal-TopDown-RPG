@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "MVVMViewModelBase.h"
+#include "TopDownRPG/Game/LoadScreenSaveGame.h"
 #include "MVVM_LoadSlot.generated.h"
 
 
@@ -19,17 +20,10 @@ class TOPDOWNRPG_API UMVVM_LoadSlot : public UMVVMViewModelBase
 
 
 public:
-	void	InitializeSlot();
-	
 	UPROPERTY(BlueprintAssignable)
 	FSetWidgetSwitcherIndex	SetWidgetSwitcherIndex;
-
-
-	void	SetLoadSlotName(FString InLoadSlotName);
-	void	SetPlayerName(FString InPlayerName);
 	
-	FString	GetLoadSlotName() const {return LoadSlotName;}
-	FString	GetPlayerName() const {return PlayerName;}
+	void	InitializeSlot();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, FieldNotify, Setter, Getter)
 	FString PlayerName;
@@ -37,8 +31,16 @@ public:
 	UPROPERTY()
 	FString SlotIndex;
 
-private:
+	UPROPERTY()
+	TEnumAsByte<ESaveSlotStatus>	SlotStatus;
 
+	void	SetLoadSlotName(FString InLoadSlotName);
+	void	SetPlayerName(FString InPlayerName);
+	
+	FString	GetLoadSlotName() const {return LoadSlotName;}
+	FString	GetPlayerName() const {return PlayerName;}
+
+private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, FieldNotify, Setter, Getter, meta=(AllowPrivateAccess="true"))
 	FString	LoadSlotName;
 };
