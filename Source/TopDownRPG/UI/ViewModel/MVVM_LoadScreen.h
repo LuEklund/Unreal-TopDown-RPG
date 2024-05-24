@@ -39,11 +39,18 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void	SelectButtonPressed(int32 Slot);
 
+	UFUNCTION(BlueprintCallable)
+	void	DeleteButtonPressed();
+
 	void	LoadData();
 
 	void	SetNumLoadSlot(int32 InNumLoadSlots);
 	int32	GetNumLoadSlot() const {return NumLoadSlot;}
 private:
+
+	UPROPERTY()
+	UMVVM_LoadSlot *SelectedSlot;
+	
 	UPROPERTY()
 	TMap<int32, UMVVM_LoadSlot *>	LoadSlots;
 

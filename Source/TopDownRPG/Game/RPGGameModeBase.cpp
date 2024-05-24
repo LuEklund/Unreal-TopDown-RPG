@@ -9,10 +9,8 @@
 
 void ARPGGameModeBase::SaveSlotData(UMVVM_LoadSlot* LoadSlot, int32 SlotIndex)
 {
-	if (UGameplayStatics::DoesSaveGameExist(LoadSlot->GetLoadSlotName(), SlotIndex))
-	{
-		UGameplayStatics::DeleteGameInSlot(LoadSlot->GetLoadSlotName(), SlotIndex);
-	}
+	DeleteSlot(LoadSlot->GetLoadSlotName(), SlotIndex);
+
 	USaveGame *SaveGameObject = UGameplayStatics::CreateSaveGameObject(LoadScreenSaveGameClass);
 	ULoadScreenSaveGame *LoadScreenSaveGame = Cast<ULoadScreenSaveGame>(SaveGameObject);
 	LoadScreenSaveGame->PlayerName = LoadSlot->PlayerName;
@@ -33,4 +31,12 @@ ULoadScreenSaveGame* ARPGGameModeBase::GetSaveSlotData(const FString& SlotName, 
 	}
 	ULoadScreenSaveGame *LoadScreenSaveGame = Cast<ULoadScreenSaveGame>(SaveGameObject);
 	return LoadScreenSaveGame;
+}
+
+void ARPGGameModeBase::DeleteSlot(const FString &LoadName, int32 SlotIndex)
+{
+	if (UGameplayStatics::DoesSaveGameExist(LoadName, SlotIndex))
+	{
+		UGameplayStatics::DeleteGameInSlot(LoadName, SlotIndex);
+	}
 }
