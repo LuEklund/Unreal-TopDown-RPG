@@ -8,7 +8,7 @@ public class TopDownRPG : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "GameplayAbilities"});
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "GameplayAbilities", "FieldNotification"});
 
 		PrivateDependencyModuleNames.AddRange(new string[] { "GamePlayTags", "GameplayTasks", "NavigationSystem", "Niagara", "AIModule", "ModelViewViewModel" });
 
