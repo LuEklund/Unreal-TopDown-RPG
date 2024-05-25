@@ -11,6 +11,8 @@
 #include "Kismet/GameplayStatics.h"
 #include "TopDownRPG/RPGGameplayTags.h"
 #include "TopDownRPG/AbilitySystem/RPGAbilitySystemComponent.h"
+#include "TopDownRPG/AbilitySystem/RPGAbilitySystemLibrary.h"
+#include "TopDownRPG/AbilitySystem/RPGAttributeSet.h"
 #include "TopDownRPG/AbilitySystem/Data/LevelUpInfo.h"
 #include "TopDownRPG/AbilitySystem/Debuff/DebuffNiagaraComponent.h"
 #include "TopDownRPG/Game/LoadScreenSaveGame.h"
@@ -54,11 +56,45 @@ void ARPGCharacter::PossessedBy(AController* NewController)
 	Super::PossessedBy(NewController);
 
 	// Init ability actor info for the: SERVER
+
 	//Attributes
 	InitAbilityActorInfo();
-	//Abilities
-	AddCharacterAbilities();
+	LoadProgress();
 
+	//TODO: LoadWorld Sate
+	// if (ARPGGameModeBase *RPGGAmeMode = Cast<ARPGGameModeBase>(UGameplayStatics::GetGameMode(this)))
+	// {
+	// 	RPGGAmeMode->LoadWo
+	// }
+
+}
+
+void ARPGCharacter::LoadProgress()
+{
+	if (ARPGGameModeBase *RPGGAmeMode = Cast<ARPGGameModeBase>(UGameplayStatics::GetGameMode(this)))
+	{
+		ULoadScreenSaveGame *SaveData = RPGGAmeMode->RetrieveInGameSaveData();
+		if (SaveData == nullptr) return;
+		
+		if (SaveData->bFirstTimeLoadIn)
+		{
+			InitializeDefaultAttributes();
+			AddCharacterAbilities();
+		}
+		else
+		{
+			//TODO: Load in abilities from disk
+			if (ARPGPlayerState *RPGPlayerState = Cast<ARPGPlayerState>(GetPlayerState()))
+			{
+				RPGPlayerState->SetLevel(SaveData->PlayerLevel);
+				RPGPlayerState->SetXP(SaveData->XP);
+				RPGPlayerState->SetAttributePoints(SaveData->AttributesPoints);
+				RPGPlayerState->SetSpellPoints(SaveData->SpellPoints);
+			}
+			URPGAbilitySystemLibrary::InitializeDefaultAttributesFromSaveData(this, AbilitySystemComponent, SaveData);
+		}
+		
+	}
 }
 
 void ARPGCharacter::OnRep_PlayerState()
@@ -190,6 +226,21 @@ void ARPGCharacter::SaveProgress_Implementation(const FName& CheckPointTag)
 		if (SaveData == nullptr) return;
 
 		SaveData->PlayerStartTag = CheckPointTag;
+
+		if (ARPGPlayerState *RPGPLayerState = Cast<ARPGPlayerState>(GetPlayerState()))
+		{
+			SaveData->PlayerLevel = RPGPLayerState->GetPlayerLevel();
+			SaveData->XP = RPGPLayerState->GetXP();
+			SaveData->AttributesPoints = RPGPLayerState->GetAttributePoints();
+			SaveData->SpellPoints = RPGPLayerState->GetSpellPoints();
+		}
+		SaveData->Strength = URPGAttributeSet::GetStrengthAttribute().GetNumericValue(GetAttributeSet());
+		SaveData->Intelligence = URPGAttributeSet::GetIntelligenceAttribute().GetNumericValue(GetAttributeSet());
+		SaveData->Resilience = URPGAttributeSet::GetResilienceAttribute().GetNumericValue(GetAttributeSet());
+		SaveData->Vigor = URPGAttributeSet::GetVigorAttribute().GetNumericValue(GetAttributeSet());
+
+		SaveData->bFirstTimeLoadIn = false;
+
 		RPGGAmeMode->SaveInGameProgressData(SaveData);
 	}
 }
@@ -239,6 +290,8 @@ void ARPGCharacter::OnRep_Burned()
 	}
 }
 
+
+
 void ARPGCharacter::InitAbilityActorInfo()
 {
 	ARPGPlayerState *RPGPlayerState = GetPlayerState<ARPGPlayerState>();
@@ -258,5 +311,5 @@ void ARPGCharacter::InitAbilityActorInfo()
 		}
 	}
 
-	InitializeDefaultAttributes();
+	// InitializeDefaultAttributes();
 }

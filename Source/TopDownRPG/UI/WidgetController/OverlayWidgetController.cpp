@@ -23,9 +23,9 @@ void UOverlayWidgetController::BindCallbacksToDependencies()
 {
 	GetRPG_PS()->OnXPChangedDelegate.AddUObject(this, &UOverlayWidgetController::OnXPChanged);
 	GetRPG_PS()->OnLevelChangedDelegate.AddLambda(
-		[this](int32 NewLevel)
+		[this](int32 NewLevel, bool bLevelUp)
 		{
-				OnPlayerLevelChangedDelegate.Broadcast(NewLevel);
+				OnPlayerLevelChangedDelegate.Broadcast(NewLevel, bLevelUp);
 		});
 
 

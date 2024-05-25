@@ -9,6 +9,7 @@
 // #include "TopDownRPG/RPGAbilityTypes.h"
 #include "RPGAbilitySystemLibrary.generated.h"
 
+class ULoadScreenSaveGame;
 struct FGameplayTag;
 class UAbilityInfo;
 class ARPGHUD;
@@ -46,6 +47,9 @@ public:
 	 ========================*/
 	UFUNCTION(BlueprintCallable, Category="RPGAbilitySystemLibrary|CharacterClassDefaults")
 	static void InitializeDefaultAttributes(const UObject *WorldContextObject, ECharacterClass CharacterClass, float Level, UAbilitySystemComponent *ASC);
+
+	UFUNCTION(BlueprintCallable, Category="RPGAbilitySystemLibrary|CharacterClassDefaults")
+	static void InitializeDefaultAttributesFromSaveData(const UObject *WorldContextObject, UAbilitySystemComponent *ASC, ULoadScreenSaveGame *SaveGame);
 
 	UFUNCTION(BlueprintCallable, Category="RPGAbilitySystemLibrary|CharacterClassDefaults")
 	static void GiveStartupAbilities(const UObject *WorldContextObject, UAbilitySystemComponent *ASC, ECharacterClass CharacterClass);

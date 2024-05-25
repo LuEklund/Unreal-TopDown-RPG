@@ -43,7 +43,13 @@ class TOPDOWNRPG_API UCharacterClassInfo : public UDataAsset
 public:
 	UPROPERTY(EditDefaultsOnly, Category="Character Class Deafults")
 	TMap<ECharacterClass, FCharacterDefaultInfo> CharacterClassInformation;
-	
+
+	UPROPERTY(EditDefaultsOnly, Category="Common Class Deafults")
+	TSubclassOf<UGameplayEffect> PrimaryAttributes_SetByCaller;
+
+	UPROPERTY(EditDefaultsOnly, Category="Common Class Deafults")
+	TSubclassOf<UGameplayEffect> SecondaryAttributes_Infinite;
+
 	UPROPERTY(EditDefaultsOnly, Category="Common Class Deafults")
 	TSubclassOf<UGameplayEffect> SecondaryAttributes;
 
