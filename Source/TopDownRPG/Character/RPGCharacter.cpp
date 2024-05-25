@@ -17,7 +17,6 @@
 #include "TopDownRPG/AbilitySystem/Data/LevelUpInfo.h"
 #include "TopDownRPG/AbilitySystem/Debuff/DebuffNiagaraComponent.h"
 #include "TopDownRPG/Game/LoadScreenSaveGame.h"
-#include "TopDownRPG/Game/RPGGameInstance.h"
 #include "TopDownRPG/Game/RPGGameModeBase.h"
 #include "TopDownRPG/Player/RPGPlayerController.h"
 #include "TopDownRPG/Player/RPGPlayerState.h"
@@ -62,11 +61,10 @@ void ARPGCharacter::PossessedBy(AController* NewController)
 	InitAbilityActorInfo();
 	LoadProgress();
 
-	//TODO: LoadWorld Sate
-	// if (ARPGGameModeBase *RPGGAmeMode = Cast<ARPGGameModeBase>(UGameplayStatics::GetGameMode(this)))
-	// {
-	// 	RPGGAmeMode->LoadWo
-	// }
+	if (ARPGGameModeBase *RPGGAmeMode = Cast<ARPGGameModeBase>(UGameplayStatics::GetGameMode(this)))
+	{
+		RPGGAmeMode->LoadWorldState(GetWorld());
+	}
 
 }
 

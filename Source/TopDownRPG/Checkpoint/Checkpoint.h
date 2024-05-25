@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerStart.h"
+#include "TopDownRPG/Interraction/SaveInterface.h"
 #include "Checkpoint.generated.h"
 
 class USphereComponent;
@@ -11,11 +12,19 @@ class USphereComponent;
  * 
  */
 UCLASS()
-class TOPDOWNRPG_API ACheckpoint : public APlayerStart
+class TOPDOWNRPG_API ACheckpoint : public APlayerStart, public ISaveInterface
 {
 	GENERATED_BODY()
 public:
 	ACheckpoint(const FObjectInitializer& ObjectInitializer);
+
+	// Save Interface
+	virtual bool ShouldLoadTransform_Implementation() override {return false;}
+	virtual void LoadActor_Implementation() override;
+	// End Save Interface
+
+	UPROPERTY(BlueprintReadOnly, SaveGame)
+	bool bReached = false;
 
 protected:
 	UFUNCTION()
