@@ -5,16 +5,48 @@
 
 #include "AbilitySystemBlueprintLibrary.h"
 #include "RPGAbilitySystemLibrary.h"
+#include "../../../../../../../Program Files/Epic Games/UE_5.3/Engine/Plugins/Editor/GameplayTagsEditor/Source/GameplayTagsEditor/Private/GameplayTagEditorUtilities.h"
 #include "ability/RPGGameplayAbility.h"
 #include "Data/AbilityInfo.h"
 #include "TopDownRPG/RPGGameplayTags.h"
 #include "TopDownRPG/RPGLogChannels.h"
+#include "TopDownRPG/Game/LoadScreenSaveGame.h"
 #include "TopDownRPG/Interraction/PlayerInterface.h"
 
 void URPGAbilitySystemComponent::AbilityActorInfoSet()
 {
 	OnGameplayEffectAppliedDelegateToSelf.AddUObject(this, &URPGAbilitySystemComponent::ClientEffectApplied);
 
+}
+
+void URPGAbilitySystemComponent::AddCharacterAbilitiesFromSaveData(ULoadScreenSaveGame* SaveData)
+{
+	for (const FSavedAbility& Data : SaveData->SavedAbilities)
+	{
+		const TSubclassOf<UGameplayAbility>	LoadedAbilityClass = Data.GameplayAbility;
+
+		FGameplayAbilitySpec	LoadedAbilitySpec = FGameplayAbilitySpec(LoadedAbilityClass, Data.AbilityLevel);
+
+		LoadedAbilitySpec.DynamicAbilityTags.AddTag(Data.AbilitySlot);
+		LoadedAbilitySpec.DynamicAbilityTags.AddTag(Data.AbilityStatus);
+		if(Data.AbilityType == FRPGGameplayTags::Get().Abilities_Type_Offensive)
+		{
+			GiveAbility(LoadedAbilitySpec);
+		}
+		else if(Data.AbilityType == FRPGGameplayTags::Get().Abilities_Type_Offensive)
+		{
+			if (Data.AbilityStatus.MatchesTagExact(FRPGGameplayTags::Get().Abilities_Status_Equipped))
+			{
+				GiveAbilityAndActivateOnce(LoadedAbilitySpec);
+			}
+			else
+			{
+				GiveAbility(LoadedAbilitySpec);
+			}
+		}
+	}
+	bStartupAbilitiesGive = true;
+	AbilitiesGivenDelegate.Broadcast();
 }
 
 void URPGAbilitySystemComponent::AddCharacterAbilities(const TArray<TSubclassOf<UGameplayAbility>>& StartupAbilities)
@@ -39,6 +71,7 @@ void URPGAbilitySystemComponent::AddCharacterPassiveAbilities(
 	for (const TSubclassOf<UGameplayAbility> AbilityClass : StartupPassiveAbilities)
 	{
 		FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(AbilityClass, 1);
+		AbilitySpec.DynamicAbilityTags.AddTag(FRPGGameplayTags::Get().Abilities_Status_Equipped);
 		GiveAbilityAndActivateOnce(AbilitySpec);
 	}
 }
@@ -310,11 +343,11 @@ void URPGAbilitySystemComponent::ServerEquipAbility_Implementation(const FGamepl
 {
 	if (FGameplayAbilitySpec *AbilitySpec = GetSpecFromAbilityTag(AbilityTag))
 	{
-		const FRPGGameplayTags	&RPGGameplayTags = FRPGGameplayTags::Get();
+		const FRPGGameplayTags	&GameplayTags = FRPGGameplayTags::Get();
 		const FGameplayTag &PrevSlot = GetInputTagFromSpec(*AbilitySpec);
 		const FGameplayTag &Status = GetStatusFromSpec(*AbilitySpec);
 
-		const bool bStatusValid = Status == RPGGameplayTags.Abilities_Status_Equipped || Status == RPGGameplayTags.Abilities_Status_Unlocked;
+		const bool bStatusValid = Status == GameplayTags.Abilities_Status_Equipped || Status == GameplayTags.Abilities_Status_Unlocked;
 		if (bStatusValid)
 		{
 			//Handle activation/deactivation for passive abilities
@@ -326,7 +359,7 @@ void URPGAbilitySystemComponent::ServerEquipAbility_Implementation(const FGamepl
 					// Are the abilities the same?
 					if (AbilityTag.MatchesTagExact(GetAbilityTagFromSpec(*SpecWithSlot)))
 					{
-						ClientEquipAbility(AbilityTag, RPGGameplayTags.Abilities_Status_Equipped, Slot, PrevSlot);
+						ClientEquipAbility(AbilityTag, GameplayTags.Abilities_Status_Equipped, Slot, PrevSlot);
 						return;
 					}
 					if (IsPassiveAbility(*SpecWithSlot))
@@ -341,14 +374,16 @@ void URPGAbilitySystemComponent::ServerEquipAbility_Implementation(const FGamepl
 			{
 				if (IsPassiveAbility(*AbilitySpec))
 				{
-					MulticastActivatePassiveEffect(AbilityTag, true);
 					TryActivateAbility(AbilitySpec->Handle);
+					MulticastActivatePassiveEffect(AbilityTag, true);
 				}
+				AbilitySpec->DynamicAbilityTags.RemoveTag(GetStatusFromSpec(*AbilitySpec));
+				AbilitySpec->DynamicAbilityTags.AddTag(GameplayTags.Abilities_Status_Equipped);
 			}
 			AssignSlotToAbility(*AbilitySpec, Slot);
 			MarkAbilitySpecDirty(*AbilitySpec);
 		}
-		ClientEquipAbility(AbilityTag, RPGGameplayTags.Abilities_Status_Equipped, Slot, PrevSlot);
+		ClientEquipAbility(AbilityTag, GameplayTags.Abilities_Status_Equipped, Slot, PrevSlot);
 	}
 }
 

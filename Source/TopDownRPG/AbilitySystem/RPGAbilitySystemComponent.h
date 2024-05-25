@@ -6,6 +6,7 @@
 #include "AbilitySystemComponent.h"
 #include "RPGAbilitySystemComponent.generated.h"
 
+class ULoadScreenSaveGame;
 DECLARE_MULTICAST_DELEGATE_OneParam(FEffectAssetTags, const FGameplayTagContainer & /*AssetTags*/)
 DECLARE_MULTICAST_DELEGATE(FAbilitiesGiven);
 DECLARE_DELEGATE_OneParam(FForEachAbility, const FGameplayAbilitySpec&);
@@ -30,6 +31,7 @@ public:
 	FDeactivatePassiveAbility	DeactivatePassiveAbility;
 	FActivatePassiveEffect		ActivatePassiveEffect;
 
+	void	AddCharacterAbilitiesFromSaveData(ULoadScreenSaveGame *SaveData);
 	void	AddCharacterAbilities(const TArray<TSubclassOf<UGameplayAbility>> &StartupAbilities);
 	void	AddCharacterPassiveAbilities(const TArray<TSubclassOf<UGameplayAbility>> &StartupPassiveAbilities);
 	bool	bStartupAbilitiesGive = false;

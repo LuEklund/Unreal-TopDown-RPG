@@ -13,6 +13,7 @@
 #include "TopDownRPG/AbilitySystem/RPGAbilitySystemComponent.h"
 #include "TopDownRPG/AbilitySystem/RPGAbilitySystemLibrary.h"
 #include "TopDownRPG/AbilitySystem/RPGAttributeSet.h"
+#include "TopDownRPG/AbilitySystem/Data/AbilityInfo.h"
 #include "TopDownRPG/AbilitySystem/Data/LevelUpInfo.h"
 #include "TopDownRPG/AbilitySystem/Debuff/DebuffNiagaraComponent.h"
 #include "TopDownRPG/Game/LoadScreenSaveGame.h"
@@ -83,7 +84,10 @@ void ARPGCharacter::LoadProgress()
 		}
 		else
 		{
-			//TODO: Load in abilities from disk
+			if (URPGAbilitySystemComponent *RPGASC = Cast<URPGAbilitySystemComponent>(AbilitySystemComponent))
+			{
+				RPGASC->AddCharacterAbilitiesFromSaveData(SaveData);
+			}
 			if (ARPGPlayerState *RPGPlayerState = Cast<ARPGPlayerState>(GetPlayerState()))
 			{
 				RPGPlayerState->SetLevel(SaveData->PlayerLevel);
@@ -241,6 +245,27 @@ void ARPGCharacter::SaveProgress_Implementation(const FName& CheckPointTag)
 
 		SaveData->bFirstTimeLoadIn = false;
 
+		if (!HasAuthority()) return;
+		URPGAbilitySystemComponent *RPGASC = Cast<URPGAbilitySystemComponent>(AbilitySystemComponent);
+		FForEachAbility SaveAbilityDelegate;
+		SaveData->SavedAbilities.Empty();
+		SaveAbilityDelegate.BindLambda([this, RPGASC, &SaveData](const FGameplayAbilitySpec &AbilitySpec)
+		{
+			const FGameplayTag AbilityTag = RPGASC->GetAbilityTagFromSpec(AbilitySpec);
+			UAbilityInfo *AbilityInfo = URPGAbilitySystemLibrary::GetAbilityInfo(this);
+			FRPGAbilityInfo Info = AbilityInfo->FindAbilityInfoForTag(AbilityTag);
+			
+			FSavedAbility SavedAbility;
+			SavedAbility.GameplayAbility = Info.Ability;
+			SavedAbility.AbilityLevel = AbilitySpec.Level;
+			SavedAbility.AbilitySlot = RPGASC->GetSlotFromAbilityTag(AbilityTag);
+			SavedAbility.AbilityStatus = RPGASC->GetStatusFromAbilityTag(AbilityTag);
+			SavedAbility.AbilityTag = AbilityTag;
+			SavedAbility.AbilityType = Info.AbilityType;
+			
+			SaveData->SavedAbilities.AddUnique(SavedAbility);
+		});
+		RPGASC->ForEachAbility(SaveAbilityDelegate);
 		RPGGAmeMode->SaveInGameProgressData(SaveData);
 	}
 }
