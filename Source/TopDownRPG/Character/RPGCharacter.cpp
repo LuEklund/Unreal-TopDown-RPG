@@ -8,10 +8,14 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "TopDownRPG/RPGGameplayTags.h"
 #include "TopDownRPG/AbilitySystem/RPGAbilitySystemComponent.h"
 #include "TopDownRPG/AbilitySystem/Data/LevelUpInfo.h"
 #include "TopDownRPG/AbilitySystem/Debuff/DebuffNiagaraComponent.h"
+#include "TopDownRPG/Game/LoadScreenSaveGame.h"
+#include "TopDownRPG/Game/RPGGameInstance.h"
+#include "TopDownRPG/Game/RPGGameModeBase.h"
 #include "TopDownRPG/Player/RPGPlayerController.h"
 #include "TopDownRPG/Player/RPGPlayerState.h"
 #include "TopDownRPG/UI/HUD/RPGHUD.h"
@@ -175,6 +179,18 @@ void ARPGCharacter::HideMagicCircle_Implementation()
 	{
 		RPGPlayerController->HideMagicCircle();
 		RPGPlayerController->bShowMouseCursor = true;
+	}
+}
+
+void ARPGCharacter::SaveProgress_Implementation(const FName& CheckPointTag)
+{
+	if (ARPGGameModeBase *RPGGAmeMode = Cast<ARPGGameModeBase>(UGameplayStatics::GetGameMode(this)))
+	{
+		ULoadScreenSaveGame *SaveData = RPGGAmeMode->RetrieveInGameSaveData();
+		if (SaveData == nullptr) return;
+
+		SaveData->PlayerStartTag = CheckPointTag;
+		RPGGAmeMode->SaveInGameProgressData(SaveData);
 	}
 }
 

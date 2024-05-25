@@ -84,6 +84,8 @@ void UMVVM_LoadScreen::PlayButtonPressed()
 		ARPGGameModeBase *RPGGameMode = Cast<ARPGGameModeBase>(UGameplayStatics::GetGameMode(this));
 		URPGGameInstance *RPGGameInstance = Cast<URPGGameInstance>(RPGGameMode->GetGameInstance());
 		RPGGameInstance->PlayerStartTag = SelectedSlot->PlayerStartTag;
+		RPGGameInstance->LoadSlotName = SelectedSlot->GetLoadSlotName();
+		RPGGameInstance->LoadSlotIndex = SelectedSlot->SlotIndex;
 		
 		RPGGameMode->TravelToMap(SelectedSlot);
 	}

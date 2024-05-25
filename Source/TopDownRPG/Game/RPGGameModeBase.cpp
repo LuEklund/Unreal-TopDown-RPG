@@ -46,6 +46,25 @@ void ARPGGameModeBase::DeleteSlot(const FString &LoadName, int32 SlotIndex)
 	}
 }
 
+ULoadScreenSaveGame* ARPGGameModeBase::RetrieveInGameSaveData()
+{
+	URPGGameInstance *RPGGameInstance = Cast<URPGGameInstance>(GetGameInstance());
+	const FString	InGameLoadSlotName = RPGGameInstance->LoadSlotName;
+	const int32		InGameLoadSlotIndex = RPGGameInstance->LoadSlotIndex;
+
+	return GetSaveSlotData(InGameLoadSlotName, InGameLoadSlotIndex);
+}
+
+void ARPGGameModeBase::SaveInGameProgressData(ULoadScreenSaveGame* saveObject)
+{
+	URPGGameInstance *RPGGameInstance = Cast<URPGGameInstance>(GetGameInstance());
+	const FString	InGameLoadSlotName = RPGGameInstance->LoadSlotName;
+	const int32		InGameLoadSlotIndex = RPGGameInstance->LoadSlotIndex;
+	RPGGameInstance->PlayerStartTag = saveObject->PlayerStartTag;
+	
+	UGameplayStatics::SaveGameToSlot(saveObject, InGameLoadSlotName, InGameLoadSlotIndex);
+}
+
 void ARPGGameModeBase::TravelToMap(UMVVM_LoadSlot* Slot)
 {
 	const FString SlotName = Slot->GetLoadSlotName();
