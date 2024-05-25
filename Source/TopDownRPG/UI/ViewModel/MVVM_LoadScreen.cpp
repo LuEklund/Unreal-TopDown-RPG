@@ -5,6 +5,7 @@
 
 #include "MVVM_LoadSlot.h"
 #include "Kismet/GameplayStatics.h"
+#include "TopDownRPG/Game/RPGGameInstance.h"
 #include "TopDownRPG/Game/RPGGameModeBase.h"
 
 void UMVVM_LoadScreen::InitializeLoadSlots()
@@ -39,9 +40,15 @@ void UMVVM_LoadScreen::NewSlotButtonPressed(int32 Slot, const FString& EnteredNa
 	LoadSlots[Slot]->SetMapName(RPGGameMode->DefaultMapName);
 	LoadSlots[Slot]->SetPlayerName(EnteredName);
 	LoadSlots[Slot]->SlotStatus = ESaveSlotStatus::Taken;
+	LoadSlots[Slot]->PlayerStartTag = RPGGameMode->DefaultPlayerStartTag;
 
 	RPGGameMode->SaveSlotData(LoadSlots[Slot], Slot);
 	LoadSlots[Slot]->InitializeSlot();
+
+	URPGGameInstance *RPGGameInstance = Cast<URPGGameInstance>(RPGGameMode->GetGameInstance());
+	RPGGameInstance->LoadSlotName = LoadSlots[Slot]->GetLoadSlotName();
+	RPGGameInstance->LoadSlotIndex = LoadSlots[Slot]->SlotIndex;
+	RPGGameInstance->PlayerStartTag = RPGGameMode->DefaultPlayerStartTag;
 }
 
 void UMVVM_LoadScreen::NewGameButtonPressed(int32 Slot)
@@ -75,6 +82,9 @@ void UMVVM_LoadScreen::PlayButtonPressed()
 	if (IsValid(SelectedSlot))
 	{
 		ARPGGameModeBase *RPGGameMode = Cast<ARPGGameModeBase>(UGameplayStatics::GetGameMode(this));
+		URPGGameInstance *RPGGameInstance = Cast<URPGGameInstance>(RPGGameMode->GetGameInstance());
+		RPGGameInstance->PlayerStartTag = SelectedSlot->PlayerStartTag;
+		
 		RPGGameMode->TravelToMap(SelectedSlot);
 	}
 }
@@ -93,7 +103,7 @@ void UMVVM_LoadScreen::LoadData()
 		LoadSlot.Value->SetPlayerName(PlayerName);
 		LoadSlot.Value->InitializeSlot();
 		LoadSlot.Value->SetMapName(SaveObject->MapName);
-		
+		LoadSlot.Value->PlayerStartTag = SaveObject->PlayerStartTag;
 	}
 }
 

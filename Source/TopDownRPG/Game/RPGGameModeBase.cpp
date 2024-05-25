@@ -4,6 +4,8 @@
 #include "RPGGameModeBase.h"
 
 #include "LoadScreenSaveGame.h"
+#include "RPGGameInstance.h"
+#include "GameFramework/PlayerStart.h"
 #include "Kismet/GameplayStatics.h"
 #include "TopDownRPG/UI/ViewModel/MVVM_LoadSlot.h"
 
@@ -16,6 +18,7 @@ void ARPGGameModeBase::SaveSlotData(UMVVM_LoadSlot* LoadSlot, int32 SlotIndex)
 	LoadScreenSaveGame->PlayerName = LoadSlot->GetPlayerName();
 	LoadScreenSaveGame->SaveSlotStatus = ESaveSlotStatus::Taken;
 	LoadScreenSaveGame->MapName = LoadSlot->GetMapName();
+	LoadScreenSaveGame->PlayerStartTag = LoadSlot->PlayerStartTag;
 	
 	UGameplayStatics::SaveGameToSlot(LoadScreenSaveGame, LoadSlot->GetLoadSlotName(), SlotIndex);
 }
@@ -48,6 +51,32 @@ void ARPGGameModeBase::TravelToMap(UMVVM_LoadSlot* Slot)
 	const FString SlotName = Slot->GetLoadSlotName();
 	const int32 SlotIndex = Slot->SlotIndex;
 	UGameplayStatics::OpenLevelBySoftObjectPtr(Slot, Maps.FindChecked(Slot->GetMapName()));
+}
+
+AActor* ARPGGameModeBase::ChoosePlayerStart_Implementation(AController* Player)
+{
+	URPGGameInstance *RPGGameInstance = Cast<URPGGameInstance>(GetGameInstance());
+
+	
+	TArray<AActor *> Actors;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), APlayerStart::StaticClass(),  Actors);
+	if (Actors.Num() > 0)
+	{
+		AActor *SelectedActor = Actors[0];
+		for (AActor *Actor : Actors)
+		{
+			if (APlayerStart *PlayerStart = Cast<APlayerStart>(Actor))
+			{
+				if (PlayerStart->PlayerStartTag == RPGGameInstance->PlayerStartTag)
+				{
+					SelectedActor = PlayerStart;
+					break;
+				}
+			}
+		}
+		return SelectedActor;
+	}
+	return nullptr;
 }
 
 void ARPGGameModeBase::BeginPlay()
