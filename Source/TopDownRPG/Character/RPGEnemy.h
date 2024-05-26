@@ -75,5 +75,8 @@ protected:
 	UPROPERTY()
 	TObjectPtr<ARPGAIController>	RPGAIController;
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void	SpawnLoot();
+
 
 };

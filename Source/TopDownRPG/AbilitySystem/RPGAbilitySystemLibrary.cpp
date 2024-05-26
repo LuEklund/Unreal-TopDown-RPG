@@ -233,6 +233,16 @@ UAbilityInfo* URPGAbilitySystemLibrary::GetAbilityInfo(const UObject* WorldConte
 	return (RPGGM->AbilityInfo);
 }
 
+ULootTiers* URPGAbilitySystemLibrary::GetLootTiers(const UObject* WorldContextObject)
+{
+	const ARPGGameModeBase *RPGGM = Cast<ARPGGameModeBase>(UGameplayStatics::GetGameMode(WorldContextObject));
+	if (!RPGGM)
+	{
+		return nullptr;
+	}
+	return (RPGGM->LootTiers);
+}
+
 /*
  * Damage Calculations Getters and Setters 
  */
