@@ -36,6 +36,11 @@ UMVVM_LoadSlot* UMVVM_LoadScreen::GetLoadSlotViewModelByIndex(int32 Index) const
 void UMVVM_LoadScreen::NewSlotButtonPressed(int32 Slot, const FString& EnteredName)
 {
 	ARPGGameModeBase *RPGGameMode = Cast<ARPGGameModeBase>(UGameplayStatics::GetGameMode(this));
+	if (!IsValid(RPGGameMode))
+	{
+		GEngine->AddOnScreenDebugMessage(1, 15.f, FColor::Magenta, FString("Please Switch to SinglePlayer"));
+		return;
+	}
 
 	LoadSlots[Slot]->SetMapName(RPGGameMode->DefaultMapName);
 	LoadSlots[Slot]->SetPlayerName(EnteredName);
@@ -95,6 +100,7 @@ void UMVVM_LoadScreen::PlayButtonPressed()
 void UMVVM_LoadScreen::LoadData()
 {
 	ARPGGameModeBase *RPGGameMode = Cast<ARPGGameModeBase>(UGameplayStatics::GetGameMode(this));
+	if (!IsValid(RPGGameMode)) return;
 	for (const TTuple<int32, UMVVM_LoadSlot *> LoadSlot : LoadSlots)
 	{
 		ULoadScreenSaveGame *SaveObject = RPGGameMode->GetSaveSlotData(LoadSlot.Value->GetLoadSlotName(), LoadSlot.Key);
