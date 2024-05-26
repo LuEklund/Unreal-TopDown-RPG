@@ -48,7 +48,7 @@ void ARPGEnemy::PossessedBy(AController* NewController)
 	RPGAIController->GetBlackboardComponent()->SetValueAsBool(FName("RangedAttacker"), CharacterClass != ECharacterClass::Warrior);
 }
 
-void ARPGEnemy::HighLightActor()
+void ARPGEnemy::HighLightActor_Implementation()
 {
 	GetMesh()->SetRenderCustomDepth(true);
 	GetMesh()->SetCustomDepthStencilValue(CUSTOM_DEPTH_RED);
@@ -57,7 +57,7 @@ void ARPGEnemy::HighLightActor()
 
 }
 
-void ARPGEnemy::UnHighLightActor()
+void ARPGEnemy::UnHighLightActor_Implementation()
 {
 	GetMesh()->SetRenderCustomDepth(false);
 	Weapon->SetRenderCustomDepth(false);

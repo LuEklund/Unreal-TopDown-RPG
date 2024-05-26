@@ -9,15 +9,23 @@
 #include "RPGPlayerController.generated.h"
 
 
+class IHighlightInterface;
 class AMagicCircle;
 class UDamageTextComponent;
 class URPGInputConfig;
 struct FInputActionValue;
 class UInputMappingContext;
 class UInputAction;
-class IEnemyInterface;
 class URPGAbilitySystemComponent;
 class USplineComponent;
+
+enum class ETargetingStatus : uint8
+{
+	TargetingEnemy,
+	TargetingNonEnemy,
+	NotTargeting
+};
+
 /**
  * 
  */
@@ -41,9 +49,11 @@ private:
 	void	Move(const FInputActionValue &InputActionValue);
 	
 	void	CursorTrace();
-	IEnemyInterface	*LastActor;
-	IEnemyInterface	*CurrentActor;
+	TObjectPtr<AActor>	LastActor;
+	TObjectPtr<AActor>	CurrentActor;
 	FHitResult	CursorHit;
+	static void	HighlightActor(AActor *InActor);
+	static void	UnHighlightActor(AActor *InActor);
 	
 
 	void	AbilityInputTagPressed(FGameplayTag InputTag);
@@ -60,11 +70,12 @@ private:
 	URPGAbilitySystemComponent *GetASC();
 
 	//Movement
-	FVector	CachedDestination = FVector::ZeroVector;
-	float	FollowTime = 0.f;
-	float	ShortPressThreshHold = 0.5f;
-	bool	bAutoRunning = false;
-	bool	bTargeting = false;
+	FVector	            CachedDestination = FVector::ZeroVector;
+	float	            FollowTime = 0.f;
+	float	            ShortPressThreshHold = 0.5f;
+	bool	            bAutoRunning = false;
+	ETargetingStatus	TargetingStatus = ETargetingStatus::NotTargeting;
+	
 	UPROPERTY(EditDefaultsOnly)
 	float	AutoRunAcceptanceRadius = 50.f;
 	UPROPERTY(VisibleAnywhere)

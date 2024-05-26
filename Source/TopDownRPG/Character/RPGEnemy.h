@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "RPGCharacterBase.h"
 #include "TopDownRPG/Interraction/EnemyInterface.h"
+#include "TopDownRPG/Interraction/HighlightInterface.h"
 #include "TopDownRPG/UI/WidgetController/OverlayWidgetController.h"
 #include "RPGEnemy.generated.h"
 
@@ -15,7 +16,7 @@ class ARPGAIController;
  * 
  */
 UCLASS()
-class TOPDOWNRPG_API ARPGEnemy : public ARPGCharacterBase, public IEnemyInterface
+class TOPDOWNRPG_API ARPGEnemy : public ARPGCharacterBase, public IEnemyInterface, public IHighlightInterface
 {
 	GENERATED_BODY()
 public:
@@ -24,10 +25,10 @@ public:
 
 	
 	
-	//Enemy Interface
-	virtual void HighLightActor() override;
-	virtual void UnHighLightActor() override;
-	//End Enemy interface
+	//Highlight Interface
+	virtual void HighLightActor_Implementation() override;;
+	virtual void UnHighLightActor_Implementation() override;;
+	//End Highlight interface
 
 	//Combat Interface
 	virtual int32 GetPlayerLevel_Implementation() override;

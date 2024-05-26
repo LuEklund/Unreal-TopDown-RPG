@@ -17,6 +17,7 @@
 #include "GameFramework/Character.h"
 #include "TopDownRPG/TopDownRPG.h"
 #include "TopDownRPG/Actor/MagicCircle.h"
+#include "TopDownRPG/Interraction/HighlightInterface.h"
 #include "TopDownRPG/UI/Widget/DamageTextComponent.h"
 
 
@@ -110,16 +111,10 @@ void ARPGPlayerController::CursorTrace()
 {
 	if (GetASC() && GetASC()->HasMatchingGameplayTag(FRPGGameplayTags::Get().Player_Block_CursorTrace))
 	{
-		if (LastActor)
-		{
-			LastActor->UnHighLightActor();
-			LastActor = nullptr;
-		}
-		if (CurrentActor)
-		{
-			CurrentActor->UnHighLightActor();
-			CurrentActor = nullptr;
-		}
+		UnHighlightActor(LastActor);
+		UnHighlightActor(CurrentActor);
+		LastActor = nullptr;
+		CurrentActor = nullptr;
 		return ;
 	}
 	const ECollisionChannel	TraceChannel = IsValid(MagicCircle) ? ECC_ExcludePlayers : ECC_Visibility;
@@ -127,14 +122,38 @@ void ARPGPlayerController::CursorTrace()
 	if (!CursorHit.bBlockingHit) return;
 	
 	LastActor = CurrentActor;
-	CurrentActor = Cast<IEnemyInterface>(CursorHit.GetActor());
+	if (IsValid(CursorHit.GetActor()) && CursorHit.GetActor()->Implements<UHighlightInterface>())
+	{
+		CurrentActor = CursorHit.GetActor();
+	}
+	else
+	{
+		CurrentActor = nullptr;
+	}
 
 	if (LastActor != CurrentActor)
 	{
-		if (LastActor) LastActor->UnHighLightActor();
-		if (CurrentActor) CurrentActor->HighLightActor();
+		UnHighlightActor(LastActor);
+		HighlightActor(CurrentActor);
 	}
 
+}
+
+void ARPGPlayerController::HighlightActor(AActor* InActor)
+{
+	
+	if (IsValid(InActor) && InActor->Implements<UHighlightInterface>())
+	{
+		IHighlightInterface::Execute_HighLightActor(InActor);
+	}
+}
+
+void ARPGPlayerController::UnHighlightActor(AActor* InActor)
+{
+	if (IsValid(InActor) && InActor->Implements<UHighlightInterface>())
+	{
+		IHighlightInterface::Execute_UnHighLightActor(InActor);
+	}
 }
 
 void ARPGPlayerController::AbilityInputTagPressed(FGameplayTag InputTag)
@@ -146,8 +165,15 @@ void ARPGPlayerController::AbilityInputTagPressed(FGameplayTag InputTag)
 
 	if (InputTag.MatchesTagExact(FRPGGameplayTags::Get().Input_Mouse_LMB))
 	{
-		bTargeting = CurrentActor != nullptr;
-		bAutoRunning = false;
+		if (IsValid(CurrentActor))
+		{
+			TargetingStatus = CurrentActor->Implements<UEnemyInterface>() ? ETargetingStatus::TargetingEnemy : ETargetingStatus::TargetingNonEnemy;
+			bAutoRunning = false;
+		}
+		else
+		{
+			TargetingStatus = ETargetingStatus::NotTargeting;
+		}
 	}
 	if (GetASC()) GetASC()->AbilityInputTagPressed(InputTag);
 }
@@ -171,7 +197,7 @@ void ARPGPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
 	{
 		GetASC()->AbilityInputTagReleased(InputTag);
 	}
-	if (!bTargeting && !bShiftDown)
+	if (TargetingStatus != ETargetingStatus::TargetingEnemy && !bShiftDown)
     {
 		const APawn *ControlledPawn = GetPawn();
 		if (FollowTime <= ShortPressThreshHold && ControlledPawn)
@@ -196,7 +222,7 @@ void ARPGPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
 			}
 		}
 		FollowTime = 0;
-		bTargeting = false;
+		TargetingStatus = ETargetingStatus::NotTargeting;
     }
 }
 
@@ -214,7 +240,7 @@ void ARPGPlayerController::AbilityInputTagHeld(FGameplayTag InputTag)
 		}
 		return ;
 	}
-	if (bTargeting || bShiftDown)
+	if (TargetingStatus == ETargetingStatus::TargetingEnemy || bShiftDown)
 	{
 		if (GetASC())
 		{
