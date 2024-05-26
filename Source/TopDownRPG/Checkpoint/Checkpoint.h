@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerStart.h"
+#include "TopDownRPG/TopDownRPG.h"
+#include "TopDownRPG/Interraction/HighlightInterface.h"
 #include "TopDownRPG/Interraction/SaveInterface.h"
 #include "Checkpoint.generated.h"
 
@@ -12,7 +14,7 @@ class USphereComponent;
  * 
  */
 UCLASS()
-class TOPDOWNRPG_API ACheckpoint : public APlayerStart, public ISaveInterface
+class TOPDOWNRPG_API ACheckpoint : public APlayerStart, public ISaveInterface, public IHighlightInterface
 {
 	GENERATED_BODY()
 public:
@@ -23,8 +25,23 @@ public:
 	virtual void LoadActor_Implementation() override;
 	// End Save Interface
 
-	UPROPERTY(BlueprintReadOnly, SaveGame)
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<USceneComponent>	MoveToComponent;
+	
+	// Highlight Interface
+	virtual void SetMoveToLocation_Implementation(FVector& OutDestination) override;
+	virtual void HighLightActor_Implementation() override;
+	virtual void UnHighLightActor_Implementation() override;
+	// End Highlight Interface
+
+	UPROPERTY(EditDefaultsOnly)
+	int32	CustomDepthStencilOverride = CUSTOM_DEPTH_TAN;
+	
+	UPROPERTY(BlueprintReadWrite, SaveGame)
 	bool bReached = false;
+
+	UPROPERTY(EditAnywhere)
+	bool	bBindOverlapCallback = true;
 
 protected:
 	UFUNCTION()
@@ -34,6 +51,7 @@ protected:
 	UFUNCTION(BlueprintImplementableEvent)
 	void	CheckPointReached(UMaterialInstanceDynamic *DynamicMaterialInstance);
 
+	UFUNCTION(BlueprintCallable)
 	void	HandleGlowEffects();
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)

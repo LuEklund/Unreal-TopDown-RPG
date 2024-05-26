@@ -33,6 +33,11 @@ ARPGEnemy::ARPGEnemy()
 	HealthBar = CreateDefaultSubobject<UWidgetComponent>("HealthBar");
 	HealthBar->SetupAttachment(RootComponent);
 
+	GetMesh()->SetCustomDepthStencilValue(CUSTOM_DEPTH_RED);
+	GetMesh()->MarkRenderStateDirty();
+	Weapon->SetCustomDepthStencilValue(CUSTOM_DEPTH_RED);
+	Weapon->MarkRenderStateDirty();
+
 	BaseWalkSpeed = 250.f;
 }
 
@@ -51,16 +56,18 @@ void ARPGEnemy::PossessedBy(AController* NewController)
 void ARPGEnemy::HighLightActor_Implementation()
 {
 	GetMesh()->SetRenderCustomDepth(true);
-	GetMesh()->SetCustomDepthStencilValue(CUSTOM_DEPTH_RED);
 	Weapon->SetRenderCustomDepth(true);
-	Weapon->SetCustomDepthStencilValue(CUSTOM_DEPTH_RED);
-
 }
 
 void ARPGEnemy::UnHighLightActor_Implementation()
 {
 	GetMesh()->SetRenderCustomDepth(false);
 	Weapon->SetRenderCustomDepth(false);
+}
+
+void ARPGEnemy::SetMoveToLocation_Implementation(FVector& OutDestination)
+{
+	//Do not change out destination.
 }
 
 int32 ARPGEnemy::GetPlayerLevel_Implementation()
