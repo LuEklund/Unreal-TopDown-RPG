@@ -275,6 +275,21 @@ int32 ARPGCharacter::GetPlayerLevel_Implementation()
 	return RPGPlayerState->GetPlayerLevel();
 }
 
+void ARPGCharacter::Die(const FVector& DeathImpulse)
+{
+	Super::Die(DeathImpulse);
+	FTimerDelegate DeathTimerDelegate;
+	DeathTimerDelegate.BindLambda([this](){
+		ARPGGameModeBase *RPGGM = Cast<ARPGGameModeBase>(UGameplayStatics::GetGameMode(this));
+		if (RPGGM)
+		{
+			RPGGM->PlayerDied(this);
+		}
+	});
+	GetWorldTimerManager().SetTimer(DeathTimer, DeathTimerDelegate, DeathTime, false);
+	CameraComponent->DetachFromComponent(FDetachmentTransformRules::KeepRelativeTransform);
+}
+
 void ARPGCharacter::OnRep_Stunned()
 {
 	if (URPGAbilitySystemComponent *RPGASC = Cast<URPGAbilitySystemComponent>(AbilitySystemComponent))

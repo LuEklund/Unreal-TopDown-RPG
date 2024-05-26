@@ -58,6 +58,8 @@ protected:
 	FName RightHandSocketName;
 	UPROPERTY(EditAnywhere, Category="Combat")
 	FName TailSocketName;
+
+	UPROPERTY(BlueprintReadOnly)
 	bool bDead = false;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Combat")
