@@ -16,7 +16,7 @@ class TOPDOWNRPG_API ARPGEnemySpawnPoint : public ATargetPoint
 {
 	GENERATED_BODY()
 public:
-	UPROPERTY(BlueprintCallable)
+	UFUNCTION(BlueprintCallable)
 	void SpawnEnemy();
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Enemy CLass")

@@ -11,5 +11,8 @@ void ARPGEnemySpawnPoint::SpawnEnemy()
 	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
 	ARPGEnemy *Enemy = GetWorld()->SpawnActorDeferred<ARPGEnemy>(EnemyClass, GetActorTransform());
-	// Enemy->
+	Enemy->SetLevel(EnemyLevel);
+	Enemy->SetCharacterClass(CharacterClass);
+	Enemy->FinishSpawning(GetActorTransform());
+	Enemy->SpawnDefaultController();
 }
